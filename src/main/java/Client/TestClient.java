@@ -11,11 +11,13 @@ public class TestClient {
         UserService proxy=clientProxy.getProxy(UserService.class);
 
         User user = proxy.getUserByUserId(1);
-        System.out.println("从服务端得到的user="+user.toString());
+        System.out.println("从服务端得到的user: "+user.toString());
+        System.out.println();
 
         User u=User.builder().id(100).userName("abc").sex(true).build();
         Integer id = proxy.insertUserId(u);
-        System.out.println("向服务端插入user的id"+id);
+        System.out.println("向服务端插入user的id: "+id);
+        System.out.println();
 
         clientProxy.rpcClient.stop();
     }
