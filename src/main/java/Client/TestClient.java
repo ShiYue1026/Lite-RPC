@@ -19,6 +19,6 @@ public class TestClient {
         System.out.println("向服务端插入user的id: "+id);
         System.out.println();
 
-        clientProxy.rpcClient.stop();
+        // clientProxy.rpcClient.stop();
     }
 }
