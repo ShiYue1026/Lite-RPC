@@ -1,6 +1,7 @@
 # RPC
 
-![image](https://github.com/user-attachments/assets/32b89a42-6fc4-4d57-a7a0-3404209a398b)
+![image](https://github.com/user-attachments/assets/93a032c0-a8e7-46d0-af7a-30db7ecf5f97)
+
 
 
 # TODO:
