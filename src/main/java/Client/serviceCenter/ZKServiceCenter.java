@@ -4,7 +4,8 @@ import Client.cache.ServiceCache;
 import Client.serviceCenter.ZKWatcher.ZKWatcher;
 import Client.serviceCenter.balance.LoadBalance;
 import Client.serviceCenter.balance.LoadBalanceFactory;
-import Client.serviceCenter.balance.impl.RoundRobinLoadBalance;
+import Client.serviceCenter.balance.constant.LoadBalanceType;
+import Client.serviceCenter.balance.impl.RoundRobinLoadBalancer;
 import common.Message.RpcRequest;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -57,7 +58,7 @@ public class ZKServiceCenter implements ServiceCenter {
                 services = client.getChildren().forPath("/" + serviceName);
             }
             // 负载均衡
-            String service = loadBalanceFactory.getLoadBalance("roundrobin").balance(request, services);
+            String service = loadBalanceFactory.getLoadBalance(LoadBalanceType.ROUND_ROBIN).balance(request, services);
             return parseAddress(service);
         } catch (Exception e) {
             e.printStackTrace();
