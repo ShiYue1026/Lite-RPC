@@ -2,6 +2,10 @@ package Client.serviceCenter;
 
 import Client.cache.ServiceCache;
 import Client.serviceCenter.ZKWatcher.ZKWatcher;
+import Client.serviceCenter.balance.LoadBalance;
+import Client.serviceCenter.balance.LoadBalanceFactory;
+import Client.serviceCenter.balance.impl.RoundRobinLoadBalance;
+import common.Message.RpcRequest;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -20,6 +24,8 @@ public class ZKServiceCenter implements ServiceCenter {
 
     private ServiceCache serviceCache;
 
+    private LoadBalanceFactory loadBalanceFactory;
+
     // 初始化zookeeper客户端，并与zookeeper服务端建立连接
     public ZKServiceCenter() {
         RetryPolicy policy = new ExponentialBackoffRetry(1000, 3);
@@ -37,18 +43,21 @@ public class ZKServiceCenter implements ServiceCenter {
         serviceCache = new ServiceCache();
         ZKWatcher watcher = new ZKWatcher(client, serviceCache);
         watcher.watchToUpdate();
+
+        loadBalanceFactory = new LoadBalanceFactory();
     }
 
     // 服务发现
     @Override
-    public InetSocketAddress serviceDiscovery(String serviceName) {
+    public InetSocketAddress serviceDiscovery(RpcRequest request) {
         try {
+            String serviceName = request.getInterfaceName();
             List<String> services = serviceCache.getServiceByCache(serviceName);
             if(services == null){  // 本地缓存没查到
                 services = client.getChildren().forPath("/" + serviceName);
             }
-            // 默认使用第一个服务，后面再加负载均衡
-            String service = services.get(0);
+            // 负载均衡
+            String service = loadBalanceFactory.getLoadBalance("roundrobin").balance(request, services);
             return parseAddress(service);
         } catch (Exception e) {
             e.printStackTrace();

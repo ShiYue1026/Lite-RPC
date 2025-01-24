@@ -8,12 +8,15 @@ import common.service.impl.UserServiceImpl;
 
 public class TestServer {
     public static void main(String[] args) {
+        String ip = System.getProperty("ip");
+        int port = Integer.parseInt(System.getProperty("port"));
+
         UserService userService=new UserServiceImpl();
 
-        ServiceProvider serviceProvider=new ServiceProvider("127.0.0.1",9999);
+        ServiceProvider serviceProvider=new ServiceProvider(ip,port);
         serviceProvider.provideServiceInterface(userService);
 
         RpcServer rpcServer=new NettyRpcServer(serviceProvider);
-        rpcServer.start(9999);
+        rpcServer.start(port);
     }
 }

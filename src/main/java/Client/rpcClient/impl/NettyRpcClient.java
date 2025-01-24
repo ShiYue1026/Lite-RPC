@@ -38,7 +38,7 @@ public class NettyRpcClient implements RpcClient {
     @Override
     public RpcResponse sendRequest(RpcRequest request) {
         // 从注册中心获取服务地址
-        InetSocketAddress address = serviceCenter.serviceDiscovery(request.getInterfaceName());
+        InetSocketAddress address = serviceCenter.serviceDiscovery(request);
         String host = address.getHostName();
         int port = address.getPort();
         try{

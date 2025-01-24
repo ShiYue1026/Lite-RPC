@@ -26,11 +26,11 @@ public class ServiceProvider {
 
     public void provideServiceInterface(Object service) {
         String serviceName = service.getClass().getName();
-        Class<?>[] interfaces=service.getClass().getInterfaces();
+        Class<?>[] interfaces = service.getClass().getInterfaces();
 
         for (Class<?> clazz: interfaces){
             // 本机的映射表
-            interfaceProvider.put(clazz.getName(),service);
+            interfaceProvider.put(clazz.getName(), service);
             // 向注册中心注册服务
             serviceRegister.register(clazz.getName(), new InetSocketAddress(host, port));
         }
