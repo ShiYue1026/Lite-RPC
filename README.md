@@ -14,6 +14,6 @@
 
 - 支持多种序列化协议：[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
 
-- 支持多种负载均衡策略：（加权）随机、（加权）轮询、（加权）Hash
+- 支持多种负载均衡策略：（加权）随机、（加权）轮询、一致性哈希
 
 ......
