@@ -12,6 +12,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class ZKServiceCenter implements ServiceCenter {
     private CuratorFramework client;
 
     private static final String ROOT_PATH = "MyRPC";
+
+    private static final String RETRY_PATH = "Retry";  // 存放可以进行重试的方法
 
     private static final String IP_PORT = "127.0.0.1:2181";
 
@@ -64,6 +67,23 @@ public class ZKServiceCenter implements ServiceCenter {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean checkRetry(String methodSignature) {
+        try {
+            CuratorFramework rootClient = client.usingNamespace(RETRY_PATH);
+            List<String> retryableMethods = rootClient.getChildren().forPath("/");
+            for(String s : retryableMethods){
+                if(s.equals(methodSignature)){
+                    System.out.println("方法" + methodSignature + "在白名单上，可进行重试");
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // 将InetSocketAddress解析为格式为ip:port的字符串

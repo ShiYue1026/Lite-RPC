@@ -31,8 +31,9 @@ public class ServiceProvider {
         for (Class<?> clazz: interfaces){
             // 本机的映射表
             interfaceProvider.put(clazz.getName(), service);
+
             // 向注册中心注册服务
-            serviceRegister.register(clazz.getName(), new InetSocketAddress(host, port));
+            serviceRegister.register(clazz, new InetSocketAddress(host, port));
         }
     }
 

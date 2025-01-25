@@ -21,10 +21,10 @@ public class NettyRpcClient implements RpcClient {
     private static final Bootstrap bootstrap;
     private static final EventLoopGroup eventLoopGroup;
 
-    private ServiceCenter serviceCenter;
+    private final ServiceCenter serviceCenter;
 
-    public NettyRpcClient() {
-        this.serviceCenter = new ZKServiceCenter();
+    public NettyRpcClient(ServiceCenter serviceCenter) {
+        this.serviceCenter = serviceCenter;
     }
 
     static {
