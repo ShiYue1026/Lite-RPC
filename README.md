@@ -19,3 +19,8 @@
 - 支持基于方法白名单的重试机制
 
 ......
+
+# Reference
+https://github.com/youngyangyang04/RPC-Java.git
+
+https://github.com/sofastack/sofa-rpc.git
