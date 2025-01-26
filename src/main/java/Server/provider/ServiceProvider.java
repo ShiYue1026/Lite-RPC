@@ -1,5 +1,8 @@
 package Server.provider;
 
+import Server.ratelimit.RateLimit;
+import Server.ratelimit.RateLimitFactory;
+import Server.ratelimit.constant.RateLimitType;
 import Server.serviceRegister.ServiceRegister;
 import Server.serviceRegister.impl.ZKServiceRegister;
 
@@ -17,11 +20,14 @@ public class ServiceProvider {
 
     private ServiceRegister serviceRegister;
 
+    private RateLimitFactory rateLimitFactory;  // 接口限流器
+
     public ServiceProvider(String host, int port) {
         this.interfaceProvider = new HashMap<>();
         this.host = host;
         this.port = port;
         this.serviceRegister = new ZKServiceRegister();
+        this.rateLimitFactory = new RateLimitFactory();
     }
 
     public void provideServiceInterface(Object service) {
@@ -39,6 +45,10 @@ public class ServiceProvider {
 
     public Object getService(String interfaceName){
         return interfaceProvider.get(interfaceName);
+    }
+
+    public RateLimit getRateLimit(String interfaceName){
+        return rateLimitFactory.getRateLimit(interfaceName, RateLimitType.TOKEN_BUCKET);
     }
 
 }
