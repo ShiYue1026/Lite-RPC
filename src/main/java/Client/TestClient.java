@@ -10,10 +10,10 @@ public class TestClient {
         //ClientProxy clientProxy=new part2.Client.proxy.ClientProxy("127.0.0.1",9999,0);  // 不需要再写入指定的ip和port了
         UserService proxy=clientProxy.getProxy(UserService.class);
 
-        for(int i=0; i<120; i++){
+        for(int i=0; i<150; i++){
             Integer i1 = i;
             Integer i2 = i1 + 100;
-            if(i % 30 == 0){
+            if(i % 50 == 0){
                 Thread.sleep(10000);
             }
             new Thread(() -> {

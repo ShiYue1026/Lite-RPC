@@ -4,11 +4,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CircuitBreaker {
 
-    private CircuitBreakerStatus status = CircuitBreakerStatus.CLOSED;
+    private volatile CircuitBreakerStatus status = CircuitBreakerStatus.CLOSED;
 
-    private AtomicInteger failureCount = new AtomicInteger(0);
-    private AtomicInteger successCount = new AtomicInteger(0);
-    private AtomicInteger requestCount = new AtomicInteger(0);
+    private volatile AtomicInteger failureCount = new AtomicInteger(0);
+    private volatile AtomicInteger successCount = new AtomicInteger(0);
+    private volatile AtomicInteger requestCount = new AtomicInteger(0);
 
     // 失败次数阈值
     private final int failureThreshold;
@@ -20,7 +20,7 @@ public class CircuitBreaker {
     private final long retryTimePeriod;
 
     // 上一次失败时间
-    private long lastFailureTime = 0;
+    private volatile long lastFailureTime = 0;
 
     public CircuitBreaker(int failureThreshold, double halfOpenSuccessRate, long retryTimePeriod) {
         this.failureThreshold = failureThreshold;
@@ -35,8 +35,8 @@ public class CircuitBreaker {
                 if (currentTime - lastFailureTime > retryTimePeriod) {  // 进入HALF_OPEN状态重试
                     status = CircuitBreakerStatus.HALF_OPEN;
                     resetCounts();
-                    return false;
                 }
+                return false;
             case HALF_OPEN:
                 requestCount.incrementAndGet();
                 return true;

@@ -9,6 +9,7 @@ import Client.serviceCenter.ServiceCenter;
 import Client.serviceCenter.ZKServiceCenter;
 import common.Message.RpcRequest;
 import common.Message.RpcResponse;
+import common.annotation.FallBack;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -38,9 +39,19 @@ public class ClientProxy implements InvocationHandler {
 
         // 熔断机制
         CircuitBreaker circuitBreaker = circuitBreakerFactory.getCircuitBreaker(getMethodSignature(request.getInterfaceName(), method));
+
         if(!circuitBreaker.allowRequest()){
             System.out.println("熔断器生效，当前请求被熔断");
-            return null;
+
+            // 进行fallback处理
+            Class<?> declaringClass = method.getDeclaringClass();
+            if(declaringClass.isAnnotationPresent(FallBack.class)){
+                FallBack fallBack = declaringClass.getAnnotation(FallBack.class);
+                return executeFallback(fallBack, method, args);  // 执行fallback方法并直接返回
+            }
+
+            throw new RuntimeException("熔断器生效且没有指定 fallback 方法");
+
         }
 
         // 重试机制
@@ -86,6 +97,20 @@ public class ClientProxy implements InvocationHandler {
             }
         }
         return sb.toString();
+    }
+
+    // 执行fallback方法
+    private Object executeFallback(FallBack fallBack, Method method, Object[] args) {
+        // 获取fallback类
+        Class<?> fallBackClass = fallBack.handler();
+        try{
+            Method fallbackMethod = fallBackClass.getMethod(method.getName(), method.getParameterTypes());
+            Object fallbackInstance = fallBackClass.getDeclaredConstructor().newInstance();
+            return fallbackMethod.invoke(fallbackInstance, args);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -1,6 +1,6 @@
 package Server.serviceRegister.impl;
 
-import Client.retry.annotation.Retryable;
+import common.annotation.Retryable;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
