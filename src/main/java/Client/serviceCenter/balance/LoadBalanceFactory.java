@@ -6,11 +6,12 @@ import Client.serviceCenter.balance.impl.RandomLoadBalancer;
 import Client.serviceCenter.balance.impl.RoundRobinLoadBalancer;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class LoadBalanceFactory {
 
-    private final HashMap<String, LoadBalance> loadBalanceMap = new HashMap<>();
+    private final ConcurrentHashMap<String, LoadBalance> loadBalanceMap = new ConcurrentHashMap<>();
 
     public LoadBalance getLoadBalance(String type) {
         type = type.toLowerCase();
