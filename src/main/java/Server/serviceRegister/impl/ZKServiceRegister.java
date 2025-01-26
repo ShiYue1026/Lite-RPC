@@ -52,7 +52,7 @@ public class ZKServiceRegister implements ServiceRegister {
             System.out.println("可重试的方法: " + retryableMethods);
             CuratorFramework rootClient = client.usingNamespace(RETRY_PATH);
             for (String retryableMethod : retryableMethods) {
-                rootClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/" + retryableMethod);
+                rootClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/" + getServiceAddress(serviceAddress) + "/" + retryableMethod);
             }
 
         } catch (Exception e) {

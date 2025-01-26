@@ -11,6 +11,5 @@ public interface ServiceCenter {
     InetSocketAddress serviceDiscovery(RpcRequest request);
 
     // 判断是否可重试
-    boolean checkRetry(String methodSignature);
-
+    boolean checkRetry(InetSocketAddress serviceAddress, String methodSignature);
 }

@@ -9,8 +9,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import Client.netty.nettyInitializer.NettyClientInitializer;
 import Client.rpcClient.RpcClient;
-import Client.serviceCenter.ServiceCenter;
-import Client.serviceCenter.ZKServiceCenter;
 import common.Message.RpcRequest;
 import common.Message.RpcResponse;
 
@@ -19,12 +17,13 @@ import java.net.InetSocketAddress;
 public class NettyRpcClient implements RpcClient {
 
     private static final Bootstrap bootstrap;
+
     private static final EventLoopGroup eventLoopGroup;
 
-    private final ServiceCenter serviceCenter;
+    private final InetSocketAddress address;
 
-    public NettyRpcClient(ServiceCenter serviceCenter) {
-        this.serviceCenter = serviceCenter;
+    public NettyRpcClient(InetSocketAddress serviceAddress) {
+        this.address = serviceAddress;
     }
 
     static {
@@ -38,7 +37,6 @@ public class NettyRpcClient implements RpcClient {
     @Override
     public RpcResponse sendRequest(RpcRequest request) {
         // 从注册中心获取服务地址
-        InetSocketAddress address = serviceCenter.serviceDiscovery(request);
         String host = address.getHostName();
         int port = address.getPort();
         try{

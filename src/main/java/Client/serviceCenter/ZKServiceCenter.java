@@ -2,17 +2,14 @@ package Client.serviceCenter;
 
 import Client.cache.ServiceCache;
 import Client.serviceCenter.ZKWatcher.ZKWatcher;
-import Client.serviceCenter.balance.LoadBalance;
 import Client.serviceCenter.balance.LoadBalanceFactory;
 import Client.serviceCenter.balance.constant.LoadBalanceType;
-import Client.serviceCenter.balance.impl.RoundRobinLoadBalancer;
 import common.Message.RpcRequest;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -70,10 +67,10 @@ public class ZKServiceCenter implements ServiceCenter {
     }
 
     @Override
-    public boolean checkRetry(String methodSignature) {
+    public boolean checkRetry(InetSocketAddress serviceAddress, String methodSignature) {
         try {
             CuratorFramework rootClient = client.usingNamespace(RETRY_PATH);
-            List<String> retryableMethods = rootClient.getChildren().forPath("/");
+            List<String> retryableMethods = rootClient.getChildren().forPath("/" + getServiceAddress(serviceAddress));
             for(String s : retryableMethods){
                 if(s.equals(methodSignature)){
                     System.out.println("方法" + methodSignature + "在白名单上，可进行重试");

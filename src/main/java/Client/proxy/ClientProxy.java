@@ -1,5 +1,7 @@
 package Client.proxy;
 
+import Client.circuitBreaker.CircuitBreaker;
+import Client.circuitBreaker.CircuitBreakerFactory;
 import Client.retry.GuavaRetry;
 import Client.rpcClient.RpcClient;
 import Client.rpcClient.impl.NettyRpcClient;
@@ -11,6 +13,7 @@ import common.Message.RpcResponse;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.InetSocketAddress;
 
 public class ClientProxy implements InvocationHandler {
 
@@ -18,9 +21,11 @@ public class ClientProxy implements InvocationHandler {
 
     public RpcClient rpcClient;
 
+    private CircuitBreakerFactory circuitBreakerFactory;
+
     public ClientProxy(){
         serviceCenter = new ZKServiceCenter();
-        rpcClient=new NettyRpcClient(serviceCenter);
+        circuitBreakerFactory = new CircuitBreakerFactory();
     }
 
     @Override
@@ -31,16 +36,34 @@ public class ClientProxy implements InvocationHandler {
                 .methodName(method.getName())
                 .params(args).paramsType(method.getParameterTypes()).build();
 
-        //数据传输
+        // 熔断机制
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.getCircuitBreaker(getMethodSignature(request.getInterfaceName(), method));
+        if(!circuitBreaker.allowRequest()){
+            System.out.println("熔断器生效，当前请求被熔断");
+            return null;
+        }
+
+        // 重试机制
         String methodSignature = getMethodSignature(request.getInterfaceName(), method);
         System.out.println("方法签名: " + methodSignature);
         RpcResponse response = null;
-        if(serviceCenter.checkRetry(methodSignature)){
+        InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
+        rpcClient = new NettyRpcClient(serviceAddress);
+        if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
             response = new GuavaRetry().sendRequestWithRetry(request, rpcClient);
         } else {
             response= rpcClient.sendRequest(request);
         }
-        //数据传输
+
+        // 统计请求是否成功，上报给熔断器
+        if (response.getCode() == 200){
+            circuitBreaker.recordSuccess();
+        }
+        if (response.getCode() == 500){
+            circuitBreaker.recordFailure();
+        }
+
+        // 返回响应数据
         return response.getData();
     }
 
