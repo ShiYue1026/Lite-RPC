@@ -12,10 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-@AllArgsConstructor
 public class NettyRpcServer implements RpcServer {
 
-    private ServiceProvider serviceProvider;
+    private final ServiceProvider serviceProvider;
+
+    private ChannelFuture channelFuture;
+
+    public NettyRpcServer(ServiceProvider serviceProvider) {
+        this.serviceProvider = serviceProvider;
+    }
 
     @Override
     public void start(int port) {
@@ -30,18 +35,30 @@ public class NettyRpcServer implements RpcServer {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new NettyServerInitializer(serviceProvider));
 
-            ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
+            channelFuture = serverBootstrap.bind(port).sync();
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e){
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
+            log.error("Netty服务端启动中断：{}", e.getMessage(), e);
         } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully().syncUninterruptibly();
+            workerGroup.shutdownGracefully().syncUninterruptibly();
+            log.info("Netty服务端关闭了");
         }
     }
 
     @Override
     public void stop() {
-
+        if(channelFuture != null){
+            try{
+                channelFuture.channel().close().sync();
+                log.info("Netty服务端主通道已关闭");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.error("关闭Netty服务端主通道时中断：{}", e.getMessage(), e);
+            }
+        } else {
+            log.warn("Netty服务端主通道尚未启动，无法关闭");
+        }
     }
 }

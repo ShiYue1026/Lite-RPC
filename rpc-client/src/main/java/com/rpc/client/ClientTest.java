@@ -16,8 +16,9 @@ public class ClientTest {
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
     public static void main(String[] args) throws InterruptedException {
+        ClientRpcApplication.initialize();
+
         ClientProxy clientProxy=new ClientProxy();
-        //ClientProxy clientProxy=new part2.Client.proxy.ClientProxy("127.0.0.1",9999,0);  // 不需要再写入指定的ip和port了
         UserService proxy=clientProxy.getProxy(UserService.class);
 
         for(int i=0; i<150; i++){

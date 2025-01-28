@@ -1,8 +1,7 @@
 rpc:
   name: rpc
-  version: 1.0.0
-  port: 9999
-  serializer: Hessian
   host: localhost
-  rigistry: zookeeper
-  loadBalance: ConsistencyHash
+  port: 9999
+  registry: zookeeper
+  serializer: hessian
+  loadBalance: roundrobin

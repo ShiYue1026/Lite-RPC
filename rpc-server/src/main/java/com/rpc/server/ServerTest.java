@@ -10,8 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServerTest {
     public static void main(String[] args) {
-        String ip = System.getProperty("ip");
+        ServerRpcApplication.initialize();
+
+        String ip = ServerRpcApplication.getRpcConfig().getHost();
         int port = Integer.parseInt(System.getProperty("port"));
+
         UserService userService=new UserServiceImpl();
 
         ServiceProvider serviceProvider=new ServiceProvider(ip, port);

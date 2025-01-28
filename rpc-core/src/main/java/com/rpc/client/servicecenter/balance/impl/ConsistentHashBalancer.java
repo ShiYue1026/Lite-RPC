@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 public class ConsistentHashBalancer implements LoadBalance {
 
     private static final int VIRTUAL_NUM = 64;
 
-    private final TreeMap<Integer, String> shards = new TreeMap<>();
+    private final ConcurrentSkipListMap<Integer, String> shards = new ConcurrentSkipListMap<>();
 
-    private List<String> realNodes = new ArrayList<>();
+    private final List<String> realNodes = new CopyOnWriteArrayList<>();
 
     private void init(List<String> addressList) {
         for (String address : addressList) {
@@ -31,7 +33,9 @@ public class ConsistentHashBalancer implements LoadBalance {
 
     @Override
     public String balance(RpcRequest request, List<String> addressList) {
-        init(addressList);
+        if(addressList.isEmpty()){
+            init(addressList);
+        }
         String s = request.getInterfaceName() + "#" + request.getMethodName();
         int hash = getHash(s);
         SortedMap<Integer, String> subMap = shards.tailMap(hash);

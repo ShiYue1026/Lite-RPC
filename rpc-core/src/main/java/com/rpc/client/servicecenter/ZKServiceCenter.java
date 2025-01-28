@@ -1,9 +1,9 @@
 package com.rpc.client.servicecenter;
 
+import com.rpc.client.ClientRpcApplication;
 import com.rpc.client.cache.ServiceCache;
 import com.rpc.client.servicecenter.ZKWatcher.ZKWatcher;
 import com.rpc.client.servicecenter.balance.LoadBalanceFactory;
-import com.rpc.client.servicecenter.balance.constant.LoadBalanceType;
 import com.rpc.message.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -13,6 +13,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Slf4j
@@ -61,7 +62,9 @@ public class ZKServiceCenter implements ServiceCenter {
                 services = client.getChildren().forPath("/" + serviceName);
             }
             // 负载均衡
-            String service = loadBalanceFactory.getLoadBalance(LoadBalanceType.ROUND_ROBIN).balance(request, services);
+            services = new CopyOnWriteArrayList<>(services);
+            String loadBalanceType = ClientRpcApplication.getRpcConfig().getLoadBalance();
+            String service = loadBalanceFactory.getLoadBalance(loadBalanceType).balance(request, services);
             return parseAddress(service);
         } catch (Exception e) {
             e.printStackTrace();
