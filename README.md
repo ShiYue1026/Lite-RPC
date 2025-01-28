@@ -12,7 +12,7 @@
 
 - 支持高性能网络传输：[Netty](https://github.com/netty/netty.git)
 
-- 支持多种序列化协议：[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
+- 支持多种序列化协议：[Json](https://www.json.org/json-en.html)、[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
 
 - 支持多种负载均衡策略：（加权）随机、（加权）轮询、一致性哈希
 
@@ -21,6 +21,10 @@
 - 支持基于方法白名单的重试机制
 
 - 支持自定义熔断fallback处理
+
+- 支持心跳超时机制，自动管理客户端和服务端之间的连接状态
+
+  
 
 
 ......
