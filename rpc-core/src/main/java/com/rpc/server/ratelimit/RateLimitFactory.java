@@ -2,9 +2,11 @@ package com.rpc.server.ratelimit;
 
 import com.rpc.server.ratelimit.constant.RateLimitType;
 import com.rpc.server.ratelimit.impl.TokenBucketRateLimiter;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
+@Component
 public class RateLimitFactory {
 
     private final HashMap<String, RateLimit> rateLimitMap = new HashMap<>();

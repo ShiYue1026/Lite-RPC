@@ -62,6 +62,7 @@ public class ClientProxy implements InvocationHandler {
         log.info("方法签名: {}", methodSignature);
         RpcResponse response = null;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
+
         rpcClient = new NettyRpcClient(serviceAddress);
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
             response = new GuavaRetry().sendRequestWithRetry(request, rpcClient);

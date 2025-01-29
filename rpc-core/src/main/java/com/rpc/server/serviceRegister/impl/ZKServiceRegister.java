@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
@@ -16,6 +17,7 @@ import java.util.List;
 
 
 @Slf4j
+@Component
 public class ZKServiceRegister implements ServiceRegister {
 
     private CuratorFramework client;
@@ -42,6 +44,7 @@ public class ZKServiceRegister implements ServiceRegister {
         try {
             // serviceName是永久节点，地址是临时节点，服务提供者下线时，不删服务名，只删地址
             String serviceName = clazz.getName();
+            log.info(serviceName);
             if(client.checkExists().forPath("/" + serviceName) == null) {
                 client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath("/" + serviceName);
             }
@@ -64,7 +67,7 @@ public class ZKServiceRegister implements ServiceRegister {
 
     // 将InetSocketAddress解析为格式为ip:port的字符串
     private String getServiceAddress(InetSocketAddress serverAddress){
-        return serverAddress.getHostName() + ":" + serverAddress.getPort();
+        return serverAddress.getAddress().getHostAddress() + ":" + serverAddress.getPort();
     }
 
     // 将格式为ip:port的字符串解析为InetSocketAddress

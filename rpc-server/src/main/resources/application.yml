@@ -1,7 +1,12 @@
+server:
+  port: 8081
 rpc:
+  port: 6666
   name: rpc
-  host: localhost
-  port: 9999
   registry: zookeeper
   serializer: hessian
   loadBalance: roundrobin
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx"

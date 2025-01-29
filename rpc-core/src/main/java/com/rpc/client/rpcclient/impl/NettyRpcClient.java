@@ -40,7 +40,7 @@ public class NettyRpcClient implements RpcClient {
     @Override
     public RpcResponse sendRequest(RpcRequest request) {
         // 从注册中心获取服务地址
-        String host = address.getHostName();
+        String host = address.getAddress().getHostAddress();
         int port = address.getPort();
         try{
             ChannelFuture channelFuture = bootstrap.connect(host, port).sync();

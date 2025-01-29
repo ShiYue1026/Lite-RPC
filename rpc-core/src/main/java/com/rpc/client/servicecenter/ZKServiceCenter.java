@@ -91,7 +91,7 @@ public class ZKServiceCenter implements ServiceCenter {
 
     // 将InetSocketAddress解析为格式为ip:port的字符串
     private String getServiceAddress(InetSocketAddress serverAddress){
-        return serverAddress.getHostName() + ":" + serverAddress.getPort();
+        return serverAddress.getAddress().getHostAddress() + ":" + serverAddress.getPort();
     }
 
     // 将格式为ip:port的字符串解析为InetSocketAddress
