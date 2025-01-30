@@ -27,8 +27,6 @@ class ClientTest {
 
     @Test
     void clientTest() throws InterruptedException {
-//        ClientProxy clientProxy=new ClientProxy();
-//        UserService proxy=clientProxy.getProxy(UserService.class);
 
         for(int i=0; i<150; i++){
             Integer i1 = i;

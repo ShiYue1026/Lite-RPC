@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>rpc-api</module>
-        <module>rpc-core</module>
-        <module>rpc-common</module>
+        <module>lite-rpc-api</module>
+        <module>lite-rpc-core</module>
+        <module>lite-rpc-common</module>
     </modules>
 
     <properties>

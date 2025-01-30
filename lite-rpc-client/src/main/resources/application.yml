@@ -1,0 +1,3 @@
+rpc:
+  serializer: hessian
+  loadBalance: random

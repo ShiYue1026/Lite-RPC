@@ -9,11 +9,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rpc-common</artifactId>
+    <artifactId>lite-rpc-common</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.rpc</groupId>
-            <artifactId>rpc-api</artifactId>
+            <artifactId>lite-rpc-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

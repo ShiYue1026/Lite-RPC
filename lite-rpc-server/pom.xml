@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rpc</groupId>
-    <artifactId>rpc-server</artifactId>
+    <artifactId>lite-rpc-server</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -16,17 +16,17 @@
     <dependencies>
         <dependency>
             <groupId>com.rpc</groupId>
-            <artifactId>rpc-api</artifactId>
+            <artifactId>lite-rpc-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.rpc</groupId>
-            <artifactId>rpc-core</artifactId>
+            <artifactId>lite-rpc-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.rpc</groupId>
-            <artifactId>rpc-common</artifactId>
+            <artifactId>lite-rpc-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

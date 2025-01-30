@@ -2,10 +2,7 @@ server:
   port: 8081
 rpc:
   port: 6666
-  name: rpc
   registry: zookeeper
-  serializer: hessian
-  loadBalance: roundrobin
 
 logging:
   pattern:

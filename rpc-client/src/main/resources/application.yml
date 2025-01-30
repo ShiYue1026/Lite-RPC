@@ -1,7 +1,0 @@
-rpc:
-  name: rpc
-  host: localhost
-  port: 9999
-  registry: zookeeper
-  serializer: hessian
-  loadBalance: random
