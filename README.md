@@ -6,8 +6,6 @@
 
 # RPC功能:
 
-- 支持多种动态代理机制：[JDK](https://github.com/openjdk/jdk.git)、[CGLib](https://github.com/cglib/cglib.git)
-
 - 支持多种注册中心：[ZooKeeper](https://github.com/apache/zookeeper.git) 、[Nacos](https://github.com/alibaba/nacos.git)
 
 - 支持高性能网络传输：[Netty](https://github.com/netty/netty.git)
