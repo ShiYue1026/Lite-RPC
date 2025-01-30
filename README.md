@@ -4,7 +4,7 @@
 
 
 
-# TODO:
+# RPC功能:
 
 - 支持多种动态代理机制：[JDK](https://github.com/openjdk/jdk.git)、[CGLib](https://github.com/cglib/cglib.git)
 
@@ -28,6 +28,131 @@
 
 - 支持通过Spring注解的方式进行服务注册与服务消费
   
+# 使用方式
+### 1. 下载模块
+
+### 2. 引入依赖
+
+```xml
+<dependencies>
+    	<dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+</dependencies>  
+
+```
+
+## 3. 服务端定义接口和实现类
+
+### 3.1 导入模块
+
+### 3.2 定义接口
+
+- 使用`@FallBack`注解标记自定义的FallBack类
+- 使用`@Retryable`注解标记需要进行重试的幂等方法
+
+```java
+@FallBack(handler = UserServiceFallBack.class)  // 
+public interface UserService {   // 客户端通过这个接口调用服务端的实现类
+
+    @Retryable
+    User getUserByUserId(Integer id);
+
+    @Retryable
+    Integer insertUserId(User user);
+
+}
+```
+
+### 3.3 接口实现类
+
+- 使用`@RpcService`注解标记接口实现类
+
+```java
+@Slf4j
+@RpcService
+public class UserServiceImpl implements UserService {
+    @Override
+    public User getUserByUserId(Integer id) {
+        log.info("客户端查询了ID={}的用户", id);
+        // 模拟从数据库中取用户的行为
+        Random random = new Random();
+        User user = User.builder()
+                        .userName(UUID.randomUUID().toString())
+                        .id(id)
+                        .gender(random.nextBoolean()).build();
+        log.info("返回用户信息: {}", user);
+        return user;
+    }
+
+    @Override
+    public Integer insertUserId(User user) {
+        log.info("插入数据成功，用户名={}", user.getUserName());
+        return user.getId();
+    }
+}
+```
+
+### 3.4 服务端和客户端引入依赖
+
+```xml
+<dependencies>
+        <dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rpc</groupId>
+            <artifactId>lite-rpc-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+</dependencies>
+    
+```
+
+### 3.5 客户端远程调用
+
+- 使用`@RpcClient`注解标记需要远程调用的服务接口类
+- 直接使用接口类调用服务类方法即可
+
+```java
+@Slf4j
+@SpringBootTest
+class ClientTest {
+    
+    @RpcClient
+    private UserService userService;
+
+    @Test
+    void clientTest() {
+         User user = userService.getUserByUserId(i1);
+         Integer id = userService.insertUserId(User.builder()
+                            .id(i1)
+                            .userName("User_" + i1)
+                            .gender(true)
+                            .build());
+        }
+    }
+```
+
 
 
 
