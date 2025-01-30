@@ -5,5 +5,3 @@ rpc:
   registry: zookeeper
   serializer: hessian
   loadBalance: random
-logging:
-  config: classpath:logback.xml

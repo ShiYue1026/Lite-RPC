@@ -1,10 +1,12 @@
 package com.rpc.client.circuitbreaker;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@Component
 public class CircuitBreakerFactory {
 
     private final ConcurrentHashMap<String, CircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();

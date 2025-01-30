@@ -1,6 +1,5 @@
-package com.rpc.service;
-
-import com.rpc.pojo.User;
+package com.rpc.server.service;
+import com.rpc.server.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

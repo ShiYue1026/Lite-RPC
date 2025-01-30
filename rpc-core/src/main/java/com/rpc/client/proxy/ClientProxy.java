@@ -4,6 +4,7 @@ import com.rpc.annotation.FallBack;
 import com.rpc.client.circuitbreaker.CircuitBreaker;
 import com.rpc.client.circuitbreaker.CircuitBreakerFactory;
 import com.rpc.client.retry.GuavaRetry;
+import com.rpc.client.rpcclient.NettyRpcClientFactory;
 import com.rpc.client.rpcclient.RpcClient;
 import com.rpc.client.rpcclient.impl.NettyRpcClient;
 import com.rpc.client.servicecenter.ServiceCenter;
@@ -11,6 +12,8 @@ import com.rpc.client.servicecenter.ZKServiceCenter;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,16 +22,19 @@ import java.net.InetSocketAddress;
 
 
 @Slf4j
+@Component
 public class ClientProxy implements InvocationHandler {
 
-    public ServiceCenter serviceCenter;
+    @Autowired
+    private ServiceCenter serviceCenter;
 
-    public RpcClient rpcClient;
+    @Autowired
+    private NettyRpcClientFactory clientFactory;
 
+    @Autowired
     private CircuitBreakerFactory circuitBreakerFactory;
 
     public ClientProxy(){
-        serviceCenter = new ZKServiceCenter();
         circuitBreakerFactory = new CircuitBreakerFactory();
     }
 
@@ -63,7 +69,7 @@ public class ClientProxy implements InvocationHandler {
         RpcResponse response = null;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
 
-        rpcClient = new NettyRpcClient(serviceAddress);
+        RpcClient rpcClient = clientFactory.createClient(serviceAddress);
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
             response = new GuavaRetry().sendRequestWithRetry(request, rpcClient);
         } else {

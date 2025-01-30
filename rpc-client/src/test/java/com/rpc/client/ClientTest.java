@@ -1,8 +1,10 @@
 package com.rpc.client;
 
-import com.rpc.client.proxy.ClientProxy;
-import com.rpc.pojo.User;
-import com.rpc.service.UserService;
+import com.rpc.annotation.RpcClient;
+
+
+import com.rpc.server.pojo.User;
+import com.rpc.server.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,12 +22,13 @@ class ClientTest {
 
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
+    @RpcClient
+    private UserService userService;
+
     @Test
     void clientTest() throws InterruptedException {
-        ClientRpcApplication.initialize();
-
-        ClientProxy clientProxy=new ClientProxy();
-        UserService proxy=clientProxy.getProxy(UserService.class);
+//        ClientProxy clientProxy=new ClientProxy();
+//        UserService proxy=clientProxy.getProxy(UserService.class);
 
         for(int i=0; i<150; i++){
             Integer i1 = i;
@@ -34,14 +37,14 @@ class ClientTest {
             }
             executorService.submit(() -> {
                 try {
-                    User user = proxy.getUserByUserId(i1);
+                    User user = userService.getUserByUserId(i1);
                     if(user != null){
                         log.info("从服务端得到的user={}", user);
                     } else{
                         log.warn("获取的 user 为 null, userId={}", i1);
                     }
 
-                    Integer id = proxy.insertUserId(User.builder()
+                    Integer id = userService.insertUserId(User.builder()
                             .id(i1)
                             .userName("User_" + i1)
                             .gender(true)

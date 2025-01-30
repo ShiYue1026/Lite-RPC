@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -16,13 +17,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class NettyRpcServer implements RpcServer {
 
-    private final ServiceProvider serviceProvider;
+    @Autowired
+    private ServiceProvider serviceProvider;
 
     private ChannelFuture channelFuture;
 
-    public NettyRpcServer(ServiceProvider serviceProvider) {
-        this.serviceProvider = serviceProvider;
-    }
 
     @Override
     public void start(int port) {

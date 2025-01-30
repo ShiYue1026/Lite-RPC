@@ -5,10 +5,12 @@ import com.rpc.client.servicecenter.balance.impl.ConsistentHashBalancer;
 import com.rpc.client.servicecenter.balance.impl.RandomLoadBalancer;
 import com.rpc.client.servicecenter.balance.impl.RoundRobinLoadBalancer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@Component
 public class LoadBalanceFactory {
 
     private final ConcurrentHashMap<String, LoadBalance> loadBalanceMap = new ConcurrentHashMap<>();

@@ -5,14 +5,12 @@ import com.rpc.server.ratelimit.RateLimit;
 import com.rpc.server.ratelimit.RateLimitFactory;
 import com.rpc.server.ratelimit.constant.RateLimitType;
 import com.rpc.server.serviceRegister.ServiceRegister;
-import com.rpc.server.serviceRegister.impl.ZKServiceRegister;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 

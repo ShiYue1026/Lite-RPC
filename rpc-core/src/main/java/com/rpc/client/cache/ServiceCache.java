@@ -1,6 +1,7 @@
 package com.rpc.client.cache;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
+@Component
 public class ServiceCache {
     // Key: 服务名  Value: 服务提供者列表
     private static final Map<String, List<String>> cache = new HashMap<>();

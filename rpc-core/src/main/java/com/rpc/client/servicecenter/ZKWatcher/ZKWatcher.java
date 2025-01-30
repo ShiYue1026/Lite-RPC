@@ -6,14 +6,16 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class ZKWatcher {
 
     private CuratorFramework client;
 
     private ServiceCache serviceCache;
-
 
     public void watchToUpdate() {
         CuratorCache curatorCache = CuratorCache.build(client, "/");

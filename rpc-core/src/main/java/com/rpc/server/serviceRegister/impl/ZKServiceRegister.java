@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -20,24 +21,11 @@ import java.util.List;
 @Component
 public class ZKServiceRegister implements ServiceRegister {
 
+    @Autowired
     private CuratorFramework client;
-
-    private static final String ROOT_PATH = "MyRPC";
 
     private static final String RETRY_PATH = "Retry";
 
-    // 初始化zookeeper客户端，并与zookeeper服务端进行连接
-    public ZKServiceRegister() {
-        RetryPolicy policy = new ExponentialBackoffRetry(1000, 3);
-        this.client = CuratorFrameworkFactory.builder()
-                .connectString("127.0.0.1:2181")
-                .sessionTimeoutMs(40000)
-                .retryPolicy(policy)
-                .namespace(ROOT_PATH)
-                .build();
-        this.client.start();
-        log.info("zookeeper连接成功");
-    }
 
     @Override
     public void register(Class<?> clazz, InetSocketAddress serviceAddress) {
