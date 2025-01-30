@@ -128,7 +128,26 @@ public class UserServiceImpl implements UserService {
     
 ```
 
-### 3.5 客户端远程调用
+### 3.5 自定义配置
+
+- 服务端自定义端口号和注册中心类型
+
+```yaml
+rpc:
+  port: 6666
+  registry: zookeeper
+```
+
+- 客户端自定义序列化方式和负载均衡类型
+
+```yaml
+rpc:
+  serializer: hessian
+  loadBalance: random
+```
+
+
+### 3.6 客户端远程调用
 
 - 使用`@RpcClient`注解标记需要远程调用的服务接口类
 - 直接使用接口类调用服务类方法即可
