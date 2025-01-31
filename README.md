@@ -58,7 +58,6 @@
 
 ### 3.2 定义接口
 
-- 使用`@FallBack`注解标记自定义的FallBack类
 - 使用`@Retryable`注解标记需要进行重试的幂等方法
 
 ```java
@@ -72,6 +71,27 @@ public interface UserService {   // 客户端通过这个接口调用服务端�
     Integer insertUserId(User user);
 
 }
+```
+
+- 使用`@FallBack`注解标记自定义的FallBack类
+
+```java
+@Slf4j
+public class UserServiceFallBack implements UserService {
+
+    @Override
+    public User getUserByUserId(Integer id) {
+        log.info("getUserByUserId的fallback方法执行... userId={}", id);
+        return null;
+    }
+
+    @Override
+    public Integer insertUserId(User user) {
+        log.info("insertUserId的fallback方法执行... userId={}", user.getId());
+        return null;
+    }
+}
+
 ```
 
 ### 3.3 接口实现类
