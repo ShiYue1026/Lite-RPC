@@ -4,6 +4,7 @@ import com.rpc.client.netty.initializer.NettyClientInitializer;
 import com.rpc.client.rpcclient.RpcClient;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
+import com.rpc.util.PendingProcessedMap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 
 @Slf4j
@@ -25,6 +30,8 @@ public class NettyRpcClient implements RpcClient {
     private static final EventLoopGroup eventLoopGroup;
 
     private final InetSocketAddress address;
+
+    private volatile Channel channel;
 
     public NettyRpcClient(InetSocketAddress serviceAddress) {
         this.address = serviceAddress;
@@ -38,30 +45,38 @@ public class NettyRpcClient implements RpcClient {
                 .handler(new NettyClientInitializer());
     }
 
-    @Override
-    public RpcResponse sendRequest(RpcRequest request) {
-        // 从注册中心获取服务地址
-        String host = address.getAddress().getHostAddress();
-        int port = address.getPort();
-        try{
-            ChannelFuture channelFuture = bootstrap.connect(host, port).sync();
-            Channel channel = channelFuture.channel();
-            channel.writeAndFlush(request);
-            channel.closeFuture().sync();
-            AttributeKey<RpcResponse> key = AttributeKey.valueOf("RPCResponse");
-            RpcResponse response = channel.attr(key).get();
-
-            log.info(String.valueOf(request));
-            log.info(String.valueOf(response));
-            return response;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private synchronized void connect(String host, int port) {
+        if (channel == null || !channel.isActive()) {
+            try {
+                ChannelFuture future = bootstrap.connect(address).sync();
+                channel = future.channel();
+            } catch (InterruptedException e) {
+                throw new RuntimeException("无法连接 RPC 服务器", e);
+            }
         }
-        return null;
     }
 
     @Override
+    public RpcResponse sendRequest(RpcRequest request) throws ExecutionException, InterruptedException {
+        // 从注册中心获取服务地址
+        String host = address.getAddress().getHostAddress();
+        int port = address.getPort();
+        connect(host, port);
+
+        CompletableFuture<RpcResponse> future = new CompletableFuture<>();
+        PendingProcessedMap.put(request.getRequestId(), future);
+
+        channel.writeAndFlush(request);
+
+        return future.get();
+    }
+
+
+    @Override
     public void stop() {
+        if (channel != null) {
+            channel.close();
+        }
         eventLoopGroup.shutdownGracefully();
     }
 

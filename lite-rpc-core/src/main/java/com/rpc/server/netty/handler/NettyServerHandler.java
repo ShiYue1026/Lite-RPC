@@ -26,7 +26,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
         // 接收request，读取并调用服务
         RpcResponse response = getResponse(request);
         ctx.writeAndFlush(response);
-        ctx.close();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
         RateLimit rateLimit = serviceProvider.getRateLimit(interfaceName);
         if(!rateLimit.getToken()){
             log.info("接口繁忙，请稍后再试");
-            return RpcResponse.fail();
+            return RpcResponse.fail(request.getRequestId());
         }
 
         // 得到服务端相应的接口实现类
@@ -53,11 +52,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
         try {
             method = service.getClass().getMethod(request.getMethodName(), request.getParamsType());
             Object invoke = method.invoke(service, request.getParams());
-            return RpcResponse.success(invoke);
+            return RpcResponse.success(invoke, request.getRequestId());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
             log.error("方法执行错误");
-            return RpcResponse.fail();
+            return RpcResponse.fail(request.getRequestId());
         }
     }
 }

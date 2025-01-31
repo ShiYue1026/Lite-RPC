@@ -11,6 +11,7 @@ import com.rpc.client.servicecenter.ServiceCenter;
 import com.rpc.client.servicecenter.ZKServiceCenter;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
+import com.rpc.util.PendingProcessedMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 
 @Slf4j
@@ -42,6 +44,7 @@ public class ClientProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //构建request
         RpcRequest request=RpcRequest.builder()
+                .requestId(UUID.randomUUID().toString())
                 .interfaceName(method.getDeclaringClass().getName())
                 .methodName(method.getName())
                 .params(args).paramsType(method.getParameterTypes()).build();
@@ -69,7 +72,7 @@ public class ClientProxy implements InvocationHandler {
         RpcResponse response = null;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
 
-        RpcClient rpcClient = clientFactory.createClient(serviceAddress);
+        RpcClient rpcClient = clientFactory.getClient(serviceAddress);
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
             response = new GuavaRetry().sendRequestWithRetry(request, rpcClient);
         } else {

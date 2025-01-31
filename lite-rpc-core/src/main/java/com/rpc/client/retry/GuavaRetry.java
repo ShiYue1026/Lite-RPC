@@ -34,6 +34,6 @@ public class GuavaRetry {
         } catch (Exception e){
             e.printStackTrace();
         }
-        return RpcResponse.fail();
+        return RpcResponse.fail(request.getRequestId());
     }
 }

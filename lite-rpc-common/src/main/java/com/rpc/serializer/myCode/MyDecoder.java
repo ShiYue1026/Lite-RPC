@@ -15,26 +15,43 @@ public class MyDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
-        // 获取消息类型
+        if (byteBuf.readableBytes() < 8) { // 确保至少有长度字段 + 消息类型 + 序列化方式
+            return;
+        }
+
+        byteBuf.markReaderIndex(); // 记录当前读取位置
+
+        // 读取数据包总长度
+        int totalLength = byteBuf.readInt();
+        if (byteBuf.readableBytes() < totalLength) {
+            byteBuf.resetReaderIndex(); // 数据不够，回滚
+            return;
+        }
+
+        // 读取消息类型
         int messageType = byteBuf.readShort();
-        if(!Objects.equals(messageType, MessageType.REQUEST.getCode()) &&
-        !Objects.equals(messageType, MessageType.RESPONSE.getCode())) {
+        if (messageType != MessageType.REQUEST.getCode() && messageType != MessageType.RESPONSE.getCode()) {
             throw new RuntimeException("MyDecoder暂不支持此种数据");
         }
 
-        // 获取指定的序列化器
+        // 读取序列化器类型
         int serializerType = byteBuf.readShort();
         Serializer serializer = Serializer.getSerializerByCode(serializerType);
-        if(serializer == null){
+        if (serializer == null) {
             throw new RuntimeException("不存在对应的序列化器");
         }
 
-        // 根据字节流长度读取数据内容并反序列化
+        // 读取数据长度
         int length = byteBuf.readInt();
+        if (byteBuf.readableBytes() < length) {
+            byteBuf.resetReaderIndex(); // 还原读取位置，等待更多数据
+            return;
+        }
+
+        // 读取数据并反序列化
         byte[] data = new byte[length];
         byteBuf.readBytes(data);
-
-        Object o = serializer.deserialize(data, messageType);
-        out.add(o);
+        Object obj = serializer.deserialize(data, messageType);
+        out.add(obj);
     }
 }
