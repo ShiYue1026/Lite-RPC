@@ -6,8 +6,6 @@
 
 # RPC功能:
 
-- 支持多种动态代理机制：[JDK](https://github.com/openjdk/jdk.git)、[CGLib](https://github.com/cglib/cglib.git)
-
 - 支持多种注册中心：[ZooKeeper](https://github.com/apache/zookeeper.git) 、[Nacos](https://github.com/alibaba/nacos.git)
 
 - 支持高性能网络传输：[Netty](https://github.com/netty/netty.git)
@@ -60,7 +58,6 @@
 
 ### 3.2 定义接口
 
-- 使用`@FallBack`注解标记自定义的FallBack类
 - 使用`@Retryable`注解标记需要进行重试的幂等方法
 
 ```java
@@ -74,6 +71,27 @@ public interface UserService {   // 客户端通过这个接口调用服务端�
     Integer insertUserId(User user);
 
 }
+```
+
+- 使用`@FallBack`注解标记自定义的FallBack类
+
+```java
+@Slf4j
+public class UserServiceFallBack implements UserService {
+
+    @Override
+    public User getUserByUserId(Integer id) {
+        log.info("getUserByUserId的fallback方法执行... userId={}", id);
+        return null;
+    }
+
+    @Override
+    public Integer insertUserId(User user) {
+        log.info("insertUserId的fallback方法执行... userId={}", user.getId());
+        return null;
+    }
+}
+
 ```
 
 ### 3.3 接口实现类
