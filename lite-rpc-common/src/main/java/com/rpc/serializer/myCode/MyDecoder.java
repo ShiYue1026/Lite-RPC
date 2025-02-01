@@ -30,7 +30,7 @@ public class MyDecoder extends ByteToMessageDecoder {
 
         // 读取消息类型
         int messageType = byteBuf.readShort();
-        if (messageType != MessageType.REQUEST.getCode() && messageType != MessageType.RESPONSE.getCode()) {
+        if (messageType != MessageType.REQUEST.getCode() && messageType != MessageType.RESPONSE.getCode() && messageType != MessageType.HEARTBEAT.getCode()) {
             throw new RuntimeException("MyDecoder暂不支持此种数据");
         }
 

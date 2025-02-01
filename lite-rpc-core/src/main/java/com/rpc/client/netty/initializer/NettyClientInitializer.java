@@ -12,6 +12,9 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolver;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
@@ -37,6 +40,8 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 //                return Class.forName(className);
 //            }
 //        }));
+
+        pipeline.addLast(new IdleStateHandler(0, 15, 0, TimeUnit.SECONDS));
 
         pipeline.addLast(new MyEncoder(new JsonSerializer()));
 

@@ -1,5 +1,6 @@
 package com.rpc.server.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -7,6 +8,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 public class ZKconfig {
 
@@ -29,7 +31,7 @@ public class ZKconfig {
 
         // 启动客户端
         client.start();
-        System.out.println("服务端Zookeeper 连接成功: " + IP_PORT);
+        log.info("服务端Zookeeper 连接成功: {}", IP_PORT);
 
         // 关闭 Hook，确保应用关闭时释放资源
         Runtime.getRuntime().addShutdownHook(new Thread(client::close));

@@ -1,6 +1,7 @@
 package com.rpc.serializer.myCode;
 
 import com.rpc.message.MessageType;
+import com.rpc.message.RpcHeartBeat;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import com.rpc.serializer.mySerializer.Serializer;
@@ -28,7 +29,10 @@ public class MyEncoder extends MessageToByteEncoder<Object> {
             byteBuf.writeShort(MessageType.REQUEST.getCode());
         } else if (msg instanceof RpcResponse) {
             byteBuf.writeShort(MessageType.RESPONSE.getCode());
-        } else {
+        } else if (msg instanceof RpcHeartBeat){
+            byteBuf.writeShort(MessageType.HEARTBEAT.getCode());
+        }
+        else {
             throw new IllegalArgumentException("不支持的消息类型: " + msg.getClass());
         }
 

@@ -1,37 +1,71 @@
 package com.rpc.server.netty.handler;
 
+import com.rpc.message.RpcHeartBeat;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import com.rpc.server.provider.ServiceProvider;
 import com.rpc.server.ratelimit.RateLimit;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
 @Slf4j
-public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private final ServiceProvider serviceProvider;
+
+    private final int MAX_IDLE_TIME = 60;  // 一分钟内没有非心跳请求就断开连接
+
+    private int idleTime = 0;
 
     public NettyServerHandler(ServiceProvider serviceProvider) {
         this.serviceProvider = serviceProvider;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcRequest request) throws Exception {
-        // 接收request，读取并调用服务
-        RpcResponse response = getResponse(request);
-        ctx.writeAndFlush(response);
+    protected void channelRead0(ChannelHandlerContext ctx, Object object) throws Exception {
+        if (object instanceof RpcRequest) {
+            idleTime = 0;
+            RpcRequest request = (RpcRequest) object;
+            // 接收request，读取并调用服务
+            RpcResponse response = getResponse(request);
+            ctx.writeAndFlush(response);
+        } else if(object instanceof RpcHeartBeat) {
+            RpcHeartBeat heartBeat = (RpcHeartBeat) object;
+            log.info("收到客户端心跳: {}", ctx.channel().remoteAddress());
+            idleTime += 15;
+            if(idleTime >= MAX_IDLE_TIME) {
+                log.info("客户端长时间无业务请求，主动关闭连接：{}", ctx.channel().remoteAddress());
+                ctx.close();
+            }
+        }
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        ctx.close();
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent event = (IdleStateEvent) evt;
+            if(event.state().equals(IdleState.READER_IDLE)){
+                log.info("客户端长时间未响应，关闭连接：{}", ctx.channel().remoteAddress());
+                ctx.close();
+            }
+        }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        if (cause instanceof IOException) {
+            System.out.println("客户端断开连接：" + ctx.channel().remoteAddress());
+        } else {
+            cause.printStackTrace(); // 其他异常打印
+        }
     }
 
     private RpcResponse getResponse(RpcRequest request) {

@@ -8,7 +8,10 @@ import com.rpc.server.provider.ServiceProvider;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.AllArgsConstructor;
+
+import java.util.concurrent.TimeUnit;
 
 
 @AllArgsConstructor
@@ -37,6 +40,8 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 //                return Class.forName(className);
 //            }
 //        }));
+
+        pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
 
         pipeline.addLast(new MyEncoder(new JsonSerializer()));
 

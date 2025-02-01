@@ -1,14 +1,14 @@
 package com.rpc.serializer.mySerializer;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rpc.message.RpcHeartBeat;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
-import static com.rpc.message.MessageType.REQUEST;
-import static com.rpc.message.MessageType.RESPONSE;
+import static com.rpc.message.MessageType.*;
 
 @Slf4j
 public class JsonSerializer implements Serializer {
@@ -44,7 +44,10 @@ public class JsonSerializer implements Serializer {
                 response.setData(JSONObject.toJavaObject((JSONObject) response.getData(), dataType));
             }
             obj = response;
-        } else {
+        } else if(Objects.equals(messageType, HEARTBEAT.getCode())){
+            obj = JSONObject.<RpcHeartBeat>parseObject(bytes, RpcHeartBeat.class);
+        }
+        else {
             log.info("JSON反序列化器暂时不支持此种类型");
             throw new RuntimeException();
         }
