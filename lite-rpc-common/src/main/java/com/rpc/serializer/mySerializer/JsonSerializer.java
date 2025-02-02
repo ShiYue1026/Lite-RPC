@@ -6,6 +6,7 @@ import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.rowset.serial.SerialException;
 import java.util.Objects;
 
 import static com.rpc.message.MessageType.*;
@@ -19,7 +20,7 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public Object deserialize(byte[] bytes, int messageType) {
+    public Object deserialize(byte[] bytes, int messageType) throws SerialException {
         Object obj = null;
         if (Objects.equals(messageType, REQUEST.getCode())) {
             RpcRequest request = JSONObject.parseObject(bytes, RpcRequest.class);
@@ -49,7 +50,7 @@ public class JsonSerializer implements Serializer {
         }
         else {
             log.info("JSON反序列化器暂时不支持此种类型");
-            throw new RuntimeException();
+            throw new SerialException("JSON反序列化器暂时不支持此种类型");
         }
         return obj;
     }

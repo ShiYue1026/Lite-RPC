@@ -21,7 +21,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private final ServiceProvider serviceProvider;
 
-    private final int MAX_IDLE_TIME = 60;  // 一分钟内没有非心跳请求就断开连接
+    private static final int MAX_IDLE_TIME = 60;  // 一分钟内没有非心跳请求就断开连接
 
     private int idleTime = 0;
 
@@ -42,9 +42,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
             log.info("收到客户端心跳: {}", ctx.channel().remoteAddress());
             idleTime += 15;
             if(idleTime >= MAX_IDLE_TIME) {
-                log.info("客户端长时间无业务请求，主动关闭连接：{}", ctx.channel().remoteAddress());
+                log.info("客户端长时间无业务请求，服务端主动关闭连接：{}", ctx.channel().remoteAddress());
                 ctx.close();
             }
+        } else{
+            throw new RuntimeException("不支持此类型的数据");
         }
     }
 

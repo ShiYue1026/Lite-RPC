@@ -1,9 +1,11 @@
 package com.rpc.client.netty.initializer;
 
+import com.rpc.client.ApplicationContextProvider;
 import com.rpc.client.netty.handler.NettyClientHandler;
 import com.rpc.serializer.myCode.MyDecoder;
 import com.rpc.serializer.myCode.MyEncoder;
 import com.rpc.serializer.mySerializer.JsonSerializer;
+import com.rpc.serializer.mySerializer.SerializerFactory;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -13,9 +15,10 @@ import io.netty.handler.codec.serialization.ClassResolver;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
-
 
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -41,9 +44,11 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 //            }
 //        }));
 
+        String serializerType = ApplicationContextProvider.getApplicationContext().getEnvironment().getProperty("rpc.serializer", "kryo");
+
         pipeline.addLast(new IdleStateHandler(0, 15, 0, TimeUnit.SECONDS));
 
-        pipeline.addLast(new MyEncoder(new JsonSerializer()));
+        pipeline.addLast(new MyEncoder(SerializerFactory.getSerializer(serializerType)));
 
         pipeline.addLast(new MyDecoder());
 

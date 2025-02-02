@@ -11,6 +11,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+
 @Slf4j
 @AllArgsConstructor
 public class MyEncoder extends MessageToByteEncoder<Object> {
@@ -46,6 +48,7 @@ public class MyEncoder extends MessageToByteEncoder<Object> {
 
         // 计算总长度并回填
         int totalLength = byteBuf.writerIndex() - 4; // 计算当前数据包的总长度（不包括自身长度字段）
+        log.info("编码后长度: {}", totalLength);
         byteBuf.setInt(0, totalLength); // 回填长度字段
     }
 }
