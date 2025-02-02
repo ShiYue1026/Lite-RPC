@@ -20,7 +20,7 @@
 
 - 支持自定义熔断fallback处理
 
-- 支持心跳超时机制，自动管理客户端和服务端之间的连接状态
+- 支持心跳超时与重连机制，自动管理客户端和服务端之间的连接状态
 
 - 支持自定义客户端与服务端的延迟连接与非延迟连接
 
@@ -123,30 +123,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-### 3.4 服务端和客户端引入依赖
-
-```xml
-<dependencies>
-        <dependency>
-            <groupId>com.rpc</groupId>
-            <artifactId>lite-rpc-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.rpc</groupId>
-            <artifactId>lite-rpc-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.rpc</groupId>
-            <artifactId>lite-rpc-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-</dependencies>
-    
-```
-
-### 3.5 自定义配置
+### 3.4 自定义配置
 
 - 服务端自定义端口号和注册中心类型
 
@@ -165,7 +142,7 @@ rpc:
 ```
 
 
-### 3.6 客户端远程调用
+### 3.5 客户端远程调用
 
 - 使用`@RpcClient`注解标记需要远程调用的服务接口类
 - 直接使用接口类调用服务类方法即可
