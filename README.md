@@ -12,7 +12,7 @@
 
 - 支持多种序列化协议：[Json](https://www.json.org/json-en.html)、[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
 
-- 支持多种负载均衡策略：（加权）随机、（加权）轮询、一致性哈希
+- 支持多种负载均衡策略：随机、轮询、一致性哈希
 
 - 支持多种限流算法：滑动窗口法、漏桶算法、令牌桶算法
 
