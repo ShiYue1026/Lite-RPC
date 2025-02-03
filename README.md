@@ -12,7 +12,7 @@
 
 - 支持多种序列化协议：[Json](https://www.json.org/json-en.html)、[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
 
-- 支持多种负载均衡策略：（加权）随机、（加权）轮询、一致性哈希
+- 支持多种负载均衡策略：随机、轮询、一致性哈希
 
 - 支持多种限流算法：滑动窗口法、漏桶算法、令牌桶算法
 
@@ -21,8 +21,6 @@
 - 支持自定义熔断fallback处理
 
 - 支持心跳超时与重连机制，自动管理客户端和服务端之间的连接状态
-
-- 支持自定义客户端与服务端的延迟连接与非延迟连接
 
 - 支持通过Spring注解的方式进行服务注册与服务消费
   
@@ -130,15 +128,16 @@ public class UserServiceImpl implements UserService {
 ```yaml
 rpc:
   port: 6666
-  registry: zookeeper
+  registry: zookeeper        # 可选值: zookeeper(默认), nacos
 ```
 
 - 客户端自定义序列化方式和负载均衡类型
 
 ```yaml
 rpc:
-  serializer: hessian
-  loadBalance: random
+  serializer: kryo           # 可选值: kryo(默认), hessian, protostuff
+  loadBalance: roundrobin    # 可选值: roundrobin(默认), random, consistenthash
+  registry: zookeeper        # 可选值: zookeeper(默认), nacos
 ```
 
 
