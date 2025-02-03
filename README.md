@@ -52,9 +52,7 @@
 
 ## 3. 服务端定义接口和实现类
 
-### 3.1 导入模块
-
-### 3.2 定义接口
+### 3.1 定义接口
 
 - 使用`@Retryable`注解标记需要进行重试的幂等方法
 
@@ -71,28 +69,7 @@ public interface UserService {   // 客户端通过这个接口调用服务端�
 }
 ```
 
-- 使用`@FallBack`注解标记自定义的FallBack类
-
-```java
-@Slf4j
-public class UserServiceFallBack implements UserService {
-
-    @Override
-    public User getUserByUserId(Integer id) {
-        log.info("getUserByUserId的fallback方法执行... userId={}", id);
-        return null;
-    }
-
-    @Override
-    public Integer insertUserId(User user) {
-        log.info("insertUserId的fallback方法执行... userId={}", user.getId());
-        return null;
-    }
-}
-
-```
-
-### 3.3 接口实现类
+### 3.2 接口实现类
 
 - 使用`@RpcService`注解标记接口实现类
 
@@ -119,6 +96,29 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 }
+```
+
+### 3.3 接口FallBack类
+
+- 使用`@FallBack`注解标记自定义的FallBack类
+
+```java
+@Slf4j
+public class UserServiceFallBack implements UserService {
+
+    @Override
+    public User getUserByUserId(Integer id) {
+        log.info("getUserByUserId的fallback方法执行... userId={}", id);
+        return null;
+    }
+
+    @Override
+    public Integer insertUserId(User user) {
+        log.info("insertUserId的fallback方法执行... userId={}", user.getId());
+        return null;
+    }
+}
+
 ```
 
 ### 3.4 自定义配置
