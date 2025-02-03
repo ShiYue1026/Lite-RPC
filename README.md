@@ -128,15 +128,16 @@ public class UserServiceImpl implements UserService {
 ```yaml
 rpc:
   port: 6666
-  registry: zookeeper
+  registry: zookeeper        # 可选值: zookeeper(默认), nacos
 ```
 
 - 客户端自定义序列化方式和负载均衡类型
 
 ```yaml
 rpc:
-  serializer: hessian
-  loadBalance: random
+  serializer: kryo           # 可选值: kryo(默认), hessian, protostuff
+  loadBalance: roundrobin    # 可选值: roundrobin(默认), random, consistenthash
+  registry: zookeeper        # 可选值: zookeeper(默认), nacos
 ```
 
 
