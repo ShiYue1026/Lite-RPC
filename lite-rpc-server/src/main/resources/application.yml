@@ -2,7 +2,7 @@ server:
   port: 8081
 rpc:
   port: 6666
-  registry: zookeeper
+  registry: nacos
 
 logging:
   pattern:

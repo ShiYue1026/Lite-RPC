@@ -2,6 +2,7 @@ package com.rpc.client.initializer;
 
 import com.rpc.annotation.RpcClient;
 import com.rpc.client.proxy.ClientProxy;
+import com.rpc.client.servicecenter.ZKWatcher.Watcher;
 import com.rpc.client.servicecenter.ZKWatcher.ZKWatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class RpcClientInitializer implements BeanPostProcessor, CommandLineRunne
 
     private final ClientProxy clientProxy;
 
-    private final ZKWatcher watcher;
+    private final Watcher watcher;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

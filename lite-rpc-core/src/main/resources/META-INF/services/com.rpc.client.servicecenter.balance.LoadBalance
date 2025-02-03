@@ -1,0 +1,3 @@
+com.rpc.client.servicecenter.balance.impl.RoundRobinLoadBalancer
+com.rpc.client.servicecenter.balance.impl.RandomLoadBalancer
+com.rpc.client.servicecenter.balance.impl.ConsistentHashBalancer

@@ -14,6 +14,10 @@ public class ServiceCache {
     // Key: 服务名  Value: 服务提供者列表
     private static final Map<String, List<String>> cache = new HashMap<>();
 
+    public Map<String, List<String>> getCache() {
+        return cache;
+    }
+
     public List<String> getServiceByCache(String serviceName) {
         if(cache.containsKey(serviceName)) {
             log.info("从客户端本地缓存中获取服务地址，无需访问注册中心");

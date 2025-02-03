@@ -7,11 +7,13 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class ZKWatcher {
+@ConditionalOnProperty(name = "rpc.registry", havingValue = "zookeeper", matchIfMissing = true)
+public class ZKWatcher implements Watcher {
 
     private CuratorFramework client;
 

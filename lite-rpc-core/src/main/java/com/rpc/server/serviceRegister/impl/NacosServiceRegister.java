@@ -1,71 +1,51 @@
 package com.rpc.server.serviceRegister.impl;
 
+import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.rpc.annotation.Retryable;
 import com.rpc.server.serviceRegister.ServiceRegister;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 @Slf4j
 @Component
-@Primary
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "zookeeper", matchIfMissing = true)
-public class ZKServiceRegister implements ServiceRegister {
-
-    @Autowired
-    private CuratorFramework client;
-
-    private static final String RETRY_PATH = "Retry";
-
+@ConditionalOnProperty(name = "rpc.registry", havingValue = "nacos")
+public class NacosServiceRegister implements ServiceRegister {
 
     @Override
     public void register(Class<?> clazz, InetSocketAddress serviceAddress) {
         try {
             // serviceName是永久节点，地址是临时节点，服务提供者下线时，不删服务名，只删地址
             String serviceName = clazz.getName();
-            log.info(serviceName);
-            if(client.checkExists().forPath("/" + serviceName) == null) {
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath("/" + serviceName);
-            }
-            log.info("注册的服务地址：{}", serviceAddress);
-            String path = "/" + serviceName + "/" + getServiceAddress(serviceAddress);
-            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path);
 
-            // 注册白名单
+            // 注册服务和白名单
+            Instance instance = new Instance();
+            instance.setIp(serviceAddress.getAddress().getHostAddress());
+            instance.setPort(serviceAddress.getPort());
             List<String> retryableMethods = getRetryableMethod(clazz);
             log.info("可重试的方法: {}", retryableMethods);
-            CuratorFramework rootClient = client.usingNamespace(RETRY_PATH);
-            for (String retryableMethod : retryableMethods) {
-                rootClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/" + getServiceAddress(serviceAddress) + "/" + retryableMethod);
-            }
+            Map<String, String> retryableMethodMap = new HashMap<>();
+            retryableMethodMap.put("Retry",  String.join(",", retryableMethods));
+            instance.setMetadata(retryableMethodMap);
 
+            NamingService namingService = NacosFactory.createNamingService("192.168.88.128:8848");
+            namingService.registerInstance(serviceName, instance);
+            log.info("RPC 服务已注册到 Nacos: {}", serviceName);
         } catch (Exception e) {
             log.error("此服务已存在");
         }
-    }
-
-    // 将InetSocketAddress解析为格式为ip:port的字符串
-    private String getServiceAddress(InetSocketAddress serverAddress){
-        return serverAddress.getAddress().getHostAddress() + ":" + serverAddress.getPort();
-    }
-
-    // 将格式为ip:port的字符串解析为InetSocketAddress
-    private InetSocketAddress parseAddress(String address) {
-        String[] result = address.split(":");
-        return new InetSocketAddress(result[0], Integer.parseInt(result[1]));
     }
 
     // 判断一个方法是否加了Retryable注解

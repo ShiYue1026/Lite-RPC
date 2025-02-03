@@ -45,7 +45,7 @@ public class NettyRpcClient implements RpcClient {
                 .handler(new NettyClientInitializer());
     }
 
-    private synchronized void connect(String host, int port) {
+    private synchronized void connect() {
         if (channel == null || !channel.isActive()) {
             try {
                 ChannelFuture future = bootstrap.connect(address).sync();
@@ -59,9 +59,7 @@ public class NettyRpcClient implements RpcClient {
     @Override
     public RpcResponse sendRequest(RpcRequest request) throws ExecutionException, InterruptedException {
         // 从注册中心获取服务地址
-        String host = address.getAddress().getHostAddress();
-        int port = address.getPort();
-        connect(host, port);
+        connect();
 
         CompletableFuture<RpcResponse> future = new CompletableFuture<>();
         PendingProcessedMap.put(request.getRequestId(), future);

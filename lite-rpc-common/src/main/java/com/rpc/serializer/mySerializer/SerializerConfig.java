@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class SerializerConfig {
 
     @Getter
-    @Value("${rpc.serializer}:Kryo")
+    @Value("${rpc.serializer}:kryo")
     private static String serializerType;
 
 }

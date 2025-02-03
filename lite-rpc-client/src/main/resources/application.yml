@@ -1,5 +1,6 @@
 server:
   port: 8079
 rpc:
-  serializer: kyro
+  serializer: kryo
   loadBalance: random
+  registry: nacos

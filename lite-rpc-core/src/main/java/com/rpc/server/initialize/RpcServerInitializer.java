@@ -26,7 +26,6 @@ public class RpcServerInitializer implements CommandLineRunner, BeanPostProcesso
     @Value("${rpc.port}")
     private int port;
 
-
     @Override
     public void run(String... args) {
         nettyRpcServer.start(port);
