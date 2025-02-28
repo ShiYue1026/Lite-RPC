@@ -1,6 +1,6 @@
 # RPC原理
 
-客户端可以像调用本地方法一样调用远程服务端上的方法。
+目标：客户端可以像调用本地方法一样调用远程服务端上的方法。
 
 ![image](https://github.com/user-attachments/assets/93a032c0-a8e7-46d0-af7a-30db7ecf5f97)
 
