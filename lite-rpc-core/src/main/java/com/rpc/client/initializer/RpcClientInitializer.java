@@ -28,7 +28,8 @@ public class RpcClientInitializer implements BeanPostProcessor, CommandLineRunne
             if(field.isAnnotationPresent(RpcClient.class)) {
                 field.setAccessible(true);
                 Class<?> interfaceClass = field.getType();
-                Object proxy = clientProxy.getProxy(interfaceClass);
+                Class<?> fallbackClass = field.getAnnotation(RpcClient.class).fallback();
+                Object proxy = clientProxy.getProxy(interfaceClass, fallbackClass);
                 try {
                     field.set(bean, proxy);
                 } catch (IllegalAccessException e) {

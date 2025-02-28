@@ -1,5 +1,7 @@
-package com.rpc.server.service;
-import com.rpc.server.pojo.User;
+package com.rpc.client.fallback;
+
+import com.rpc.pojo.User;
+import com.rpc.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,3 +19,4 @@ public class UserServiceFallBack implements UserService {
         return null;
     }
 }
+

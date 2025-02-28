@@ -36,9 +36,9 @@ public class ClientProxy implements InvocationHandler {
     @Autowired
     private CircuitBreakerFactory circuitBreakerFactory;
 
-    public ClientProxy(){
-        circuitBreakerFactory = new CircuitBreakerFactory();
-    }
+    private Class<?> fallbackClass;
+
+    public ClientProxy(){}
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -56,10 +56,8 @@ public class ClientProxy implements InvocationHandler {
             log.info("熔断器生效，当前请求被熔断");
 
             // 进行fallback处理
-            Class<?> declaringClass = method.getDeclaringClass();
-            if(declaringClass.isAnnotationPresent(FallBack.class)){
-                FallBack fallBack = declaringClass.getAnnotation(FallBack.class);
-                return executeFallback(fallBack, method, args);  // 执行fallback方法并直接返回
+            if(fallbackClass != null){
+                return executeFallback(fallbackClass, method, args);  // 执行fallback方法并直接返回
             }
 
             throw new RuntimeException("熔断器生效且没有指定 fallback 方法");
@@ -90,10 +88,10 @@ public class ClientProxy implements InvocationHandler {
         return response.getData();
     }
 
-    public <T>T getProxy(Class<T> clazz){
-        Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, this);
-        return (T)o;
-    }
+//    public <T>T getProxy(Class<T> clazz, Class<T> fallbackClazz){
+//        Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new ClientProxy(fallbackClazz));
+//        return (T)o;
+//    }
 
     // 根据接口名字和方法获取方法签名
     private String getMethodSignature(String interfaceName, Method method) {
@@ -112,12 +110,10 @@ public class ClientProxy implements InvocationHandler {
     }
 
     // 执行fallback方法
-    private Object executeFallback(FallBack fallBack, Method method, Object[] args) {
-        // 获取fallback类
-        Class<?> fallBackClass = fallBack.handler();
+    private Object executeFallback(Class<?> fallbackClass, Method method, Object[] args) {
         try{
-            Method fallbackMethod = fallBackClass.getMethod(method.getName(), method.getParameterTypes());
-            Object fallbackInstance = fallBackClass.getDeclaredConstructor().newInstance();
+            Method fallbackMethod = fallbackClass.getMethod(method.getName(), method.getParameterTypes());
+            Object fallbackInstance = fallbackClass.getDeclaredConstructor().newInstance();
             return fallbackMethod.invoke(fallbackInstance, args);
         } catch (Exception e){
             e.printStackTrace();
@@ -125,4 +121,9 @@ public class ClientProxy implements InvocationHandler {
         return null;
     }
 
+    public Object getProxy(Class<?> interfaceClass, Class<?> fallbackClass) {
+        this.fallbackClass = fallbackClass;
+        Object o = Proxy.newProxyInstance(interfaceClass.getClassLoader(), new Class[]{interfaceClass}, this);
+        return o;
+    }
 }

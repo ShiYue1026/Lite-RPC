@@ -1,8 +1,9 @@
 package com.rpc.client;
 
 import com.rpc.annotation.RpcClient;
-import com.rpc.server.pojo.User;
-import com.rpc.server.service.UserService;
+import com.rpc.client.fallback.UserServiceFallBack;
+import com.rpc.pojo.User;
+import com.rpc.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class ClientTest implements CommandLineRunner {
     private static final int THREAD_POOL_SIZE = 20;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
-    @RpcClient
+    @RpcClient(fallback = UserServiceFallBack.class)
     private UserService userService;
 
     @Override

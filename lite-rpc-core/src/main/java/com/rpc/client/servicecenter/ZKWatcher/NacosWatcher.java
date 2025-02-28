@@ -32,8 +32,8 @@ public class NacosWatcher implements Watcher {
                     if (event instanceof NamingEvent) {
                         List<Instance> instances = ((NamingEvent) event).getInstances();
                         List<String> services = new ArrayList<>();
-                        for(Instance instance : instances){
-                           services.add(instance.getIp() + ":" + instance.getPort());
+                        for (Instance instance : instances) {
+                            services.add(instance.getIp() + ":" + instance.getPort());
                         }
                         serviceCache.getCache().clear();
                         serviceCache.getCache().put(serviceName, services);

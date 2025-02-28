@@ -27,8 +27,8 @@ public class NettyRpcServer implements RpcServer {
     @Override
     public void start(int port) {
         // boss负责建立连接，work负责具体的请求
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup(8);
         log.info("netty服务端启动了...");
 
         try {

@@ -1,4 +1,4 @@
-package com.rpc.server.pojo;
+package com.rpc.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

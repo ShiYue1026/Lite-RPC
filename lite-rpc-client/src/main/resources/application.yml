@@ -1,6 +1,6 @@
 server:
   port: 8079
 rpc:
-  serializer: kryo
+  serializer: hessian
   loadBalance: random
-  registry: nacos
+  registry: zookeeper
