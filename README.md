@@ -5,6 +5,7 @@
 
 
 # RPC功能:
+- 服务端和客户端完全解耦：服务端负责接口具体实现，客户端调用接口时，只需导入接口的依赖，而无需导入整个服务端
 
 - 支持多种注册中心：[ZooKeeper](https://github.com/apache/zookeeper.git) 、[Nacos](https://github.com/alibaba/nacos.git)
 
@@ -24,7 +25,6 @@
 
 - 支持通过Spring注解的方式进行服务注册与服务消费
 
-- TODO：接口单独抽取出来一个模块解耦，服务端和客户端依赖这个模块，服务端负责接口具体实现
   
 # 使用方式
 ### 1. 下载模块
@@ -33,11 +33,15 @@
 
 ```xml
 <dependencies>
+
+      // 自定义的接口模块
     	<dependency>
             <groupId>com.rpc</groupId>
-            <artifactId>lite-rpc-api</artifactId>
+            <artifactId>lite-rpc-api</artifactId> 
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        // 封装好的Lite-RPC
         <dependency>
             <groupId>com.rpc</groupId>
             <artifactId>lite-rpc-core</artifactId>
@@ -48,6 +52,7 @@
             <artifactId>lite-rpc-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
 </dependencies>  
 
 ```
@@ -59,7 +64,6 @@
 - 使用`@Retryable`注解标记需要进行重试的幂等方法
 
 ```java
-@FallBack(handler = UserServiceFallBack.class)  // 
 public interface UserService {   // 客户端通过这个接口调用服务端的实现类
 
     @Retryable
@@ -100,9 +104,9 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-### 3.3 接口FallBack类
+### 3.3 客户端可自定义FallBack类
 
-- 使用`@FallBack`注解标记自定义的FallBack类
+- 在`@RpcClient`注解的参数中引入自定义的FallBack类
 
 ```java
 @Slf4j
@@ -121,6 +125,13 @@ public class UserServiceFallBack implements UserService {
     }
 }
 
+```
+
+```java
+  ...
+    @RpcClient(fallback = UserServiceFallBack.class)
+    private UserService userService;
+  ...
 ```
 
 ### 3.4 自定义配置
@@ -153,7 +164,7 @@ rpc:
 @SpringBootTest
 class ClientTest {
     
-    @RpcClient
+    @RpcClient(fallback = UserServiceFallBack.class)
     private UserService userService;
 
     @Test
