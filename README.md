@@ -9,21 +9,22 @@
 
 - 支持多种注册中心：[ZooKeeper](https://github.com/apache/zookeeper.git) 、[Nacos](https://github.com/alibaba/nacos.git)
 
-- 支持高性能网络传输：[Netty](https://github.com/netty/netty.git)
+- 支持客户端与服务端之间的高性能网络传输：[Netty](https://github.com/netty/netty.git)
 
-- 支持多种序列化协议：[Json](https://www.json.org/json-en.html)、[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
+- 支持客户端与服务端之间的多种序列化协议：[Json](https://www.json.org/json-en.html)、[Hessian](http://hessian.caucho.com/)、[Kryo](https://github.com/EsotericSoftware/kryo.git)、[Protostuff](https://github.com/protostuff/protostuff.git)
 
-- 支持多种负载均衡策略：随机、轮询、一致性哈希
+- 支持客户端与服务端之间的心跳超时与重连机制，自动管理客户端和服务端之间的连接状态
 
-- 支持多种限流算法：滑动窗口法、漏桶算法、令牌桶算法
+- 支持客户端与服务端通过Spring注解的方式进行服务注册与服务消费
 
-- 支持基于方法白名单的重试机制
+- 支持服务端上的多种限流算法：滑动窗口法、漏桶算法、令牌桶算法
 
-- 支持自定义熔断fallback处理
+- 支持客户端上的多种负载均衡策略：随机、轮询、一致性哈希
 
-- 支持心跳超时与重连机制，自动管理客户端和服务端之间的连接状态
+- 支持客户端自定义方法白名单的重试机制
 
-- 支持通过Spring注解的方式进行服务注册与服务消费
+- 支持客户端自定义熔断fallback处理
+
 
   
 # 使用方式
