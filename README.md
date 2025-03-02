@@ -36,14 +36,6 @@
 
 ```xml
 <dependencies>
-
-      // 自定义的接口模块
-    	<dependency>
-            <groupId>com.rpc</groupId>
-            <artifactId>lite-rpc-api</artifactId> 
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         // 封装好的Lite-RPC
         <dependency>
             <groupId>com.rpc</groupId>
