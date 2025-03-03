@@ -27,6 +27,8 @@
 
 - 支持客户端自定义熔断fallback处理
 
+- 支持Prometheus + Grafana进行监控
+
 
   
 # 使用方式
@@ -174,6 +176,8 @@ class ClientTest {
     }
 ```
 
+### 3.6 可以结合Prometheus + Grafana对远程调用状态进行监控
+<img width="1061" alt="image" src="https://github.com/user-attachments/assets/06e107c9-a740-4aa6-90cb-6ea3ff09dab3" />
 
 
 
