@@ -24,7 +24,7 @@ public class RateLimitFactory {
     private RateLimit createRateLimit(String type) {
         switch(type){
             case RateLimitType.TOKEN_BUCKET:
-                return new TokenBucketRateLimiter(100, 10);
+                return new TokenBucketRateLimiter(10, 100);
             default:
                 throw new IllegalArgumentException("Unknown rate limit type: " + type);
         }

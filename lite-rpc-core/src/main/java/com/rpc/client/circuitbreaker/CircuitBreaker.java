@@ -38,6 +38,7 @@ public class CircuitBreaker {
                 if (currentTime - lastFailureTime > retryTimePeriod) {  // 进入HALF_OPEN状态重试
                     status = CircuitBreakerStatus.HALF_OPEN;
                     resetCounts();
+                    return true;
                 }
                 return false;
             case HALF_OPEN:
@@ -59,7 +60,7 @@ public class CircuitBreaker {
                 resetCounts();
             }
         } else {
-            resetCounts();;
+            resetCounts();
         }
     }
 
@@ -69,6 +70,17 @@ public class CircuitBreaker {
         lastFailureTime = System.currentTimeMillis();
         if(status == CircuitBreakerStatus.CLOSED && failureCount.get() >= failureThreshold) {
             status = CircuitBreakerStatus.OPEN;
+            resetCounts();
+        }
+
+        // 在 HALF_OPEN 状态下失败过多时，回到 OPEN 状态
+        if (status == CircuitBreakerStatus.HALF_OPEN) {
+            int failureLimit = (int) Math.ceil((1 - halfOpenSuccessRate) * requestCount.get());
+            if (failureCount.get() >= failureLimit) {
+                status = CircuitBreakerStatus.OPEN;
+                lastFailureTime = System.currentTimeMillis();  // 重新计时
+                resetCounts();
+            }
         }
     }
 

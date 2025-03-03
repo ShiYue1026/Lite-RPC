@@ -12,6 +12,9 @@ import com.rpc.client.servicecenter.ZKServiceCenter;
 import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import com.rpc.util.PendingProcessedMap;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +39,12 @@ public class ClientProxy implements InvocationHandler {
     @Autowired
     private CircuitBreakerFactory circuitBreakerFactory;
 
+    @Autowired
+    private GuavaRetry guavaRetry;
+
+    @Resource
+    private MeterRegistry meterRegistry;
+
     private Class<?> fallbackClass;
 
     public ClientProxy(){}
@@ -54,7 +63,8 @@ public class ClientProxy implements InvocationHandler {
 
         if(!circuitBreaker.allowRequest()){
             log.info("熔断器生效，当前请求被熔断");
-
+            Counter circuitBreakCounter = meterRegistry.counter("rpc_circuit_break_total");
+            circuitBreakCounter.increment();
             // 进行fallback处理
             if(fallbackClass != null){
                 return executeFallback(fallbackClass, method, args);  // 执行fallback方法并直接返回
@@ -70,17 +80,23 @@ public class ClientProxy implements InvocationHandler {
         RpcResponse response = null;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
         RpcClient rpcClient = clientFactory.getClient(serviceAddress);
+        Counter requestCounter = meterRegistry.counter("rpc_requests_total");
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
-            response = new GuavaRetry().sendRequestWithRetry(request, rpcClient);
+            response = guavaRetry.sendRequestWithRetry(request, rpcClient);
         } else {
+            requestCounter.increment();
             response= rpcClient.sendRequest(request);
         }
 
         // 统计请求是否成功，上报给熔断器
         if (response.getCode() == 200){
+            Counter successCounter = meterRegistry.counter("rpc_success_total");
+            successCounter.increment();
             circuitBreaker.recordSuccess();
         }
         if (response.getCode() == 500){
+            Counter failCounter = meterRegistry.counter("rpc_fail_total");
+            failCounter.increment();
             circuitBreaker.recordFailure();
         }
 

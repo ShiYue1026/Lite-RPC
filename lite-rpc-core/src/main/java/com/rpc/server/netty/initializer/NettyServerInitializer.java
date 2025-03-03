@@ -9,6 +9,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.AllArgsConstructor;
 
 import java.util.concurrent.TimeUnit;
@@ -18,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private ServiceProvider serviceProvider;
+
+    private static final EventExecutorGroup workerGroup = new DefaultEventExecutorGroup(16); // 16 个线程并发处理 Handler
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -47,6 +51,6 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(new MyDecoder());
 
-        pipeline.addLast(new NettyServerHandler(serviceProvider));
+        pipeline.addLast(workerGroup, new NettyServerHandler(serviceProvider));
     }
 }

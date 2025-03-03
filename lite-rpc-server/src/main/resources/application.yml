@@ -1,5 +1,9 @@
+
 server:
   port: 8081
+  tomcat:
+    mbeanregistry:
+      enabled: true
 rpc:
   port: 6666
   registry: zookeeper
@@ -7,3 +11,22 @@ rpc:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%xEx"
+
+management:
+  endpoints:
+    #暴露所有端点信息
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
+    health:
+      show-details: always
+  security:
+    enabled: false
+  health:
+    elasticsearch:
+      enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true

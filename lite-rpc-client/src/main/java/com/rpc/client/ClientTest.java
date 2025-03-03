@@ -25,9 +25,9 @@ public class ClientTest implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("RPC 客户端启动，开始并发请求...");
 
-        for (int i = 0; i < 150; i++) {
+        for (int i = 0; i < 100; i++) {
             if(i % 50 == 0 && i != 0){
-                Thread.sleep(10000);
+                Thread.sleep(3000);
             }
             Integer i1 = i;
             executorService.execute(() -> {
@@ -58,9 +58,9 @@ public class ClientTest implements CommandLineRunner {
             });
         }
 
-        Thread.sleep(60000);
+        Thread.sleep(30000);
 
-        for (int i = 0; i < 150; i++) {
+        for (int i = 0; i < 100; i++) {
             if(i % 50 == 0 && i != 0){
                 Thread.sleep(10000);
             }

@@ -5,11 +5,18 @@ import com.rpc.message.RpcRequest;
 import com.rpc.message.RpcResponse;
 import com.rpc.server.provider.ServiceProvider;
 import com.rpc.server.ratelimit.RateLimit;
+import com.rpc.server.tool.SpringContextHolder;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +24,9 @@ import java.lang.reflect.Method;
 
 
 @Slf4j
-public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
+public class NettyServerHandler extends SimpleChannelInboundHandler<Object>{
+
+    private final MeterRegistry meterRegistry;
 
     private final ServiceProvider serviceProvider;
 
@@ -27,6 +36,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     public NettyServerHandler(ServiceProvider serviceProvider) {
         this.serviceProvider = serviceProvider;
+        this.meterRegistry = SpringContextHolder.getBean(MeterRegistry.class);
     }
 
     @Override
@@ -38,7 +48,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
             RpcResponse response = getResponse(request);
             ctx.writeAndFlush(response);
         } else if(object instanceof RpcHeartBeat) {
-            RpcHeartBeat heartBeat = (RpcHeartBeat) object;
             log.info("收到客户端心跳: {}", ctx.channel().remoteAddress());
             idleTime += 15;
             if(idleTime >= MAX_IDLE_TIME) {
@@ -78,6 +87,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
         RateLimit rateLimit = serviceProvider.getRateLimit(interfaceName);
         if(!rateLimit.getToken()){
             log.info("接口繁忙，请稍后再试");
+            Counter limitCounter = meterRegistry.counter("rpc_limit_total");
+            limitCounter.increment();
             return RpcResponse.fail(request.getRequestId());
         }
 
@@ -95,4 +106,5 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
             return RpcResponse.fail(request.getRequestId());
         }
     }
+
 }

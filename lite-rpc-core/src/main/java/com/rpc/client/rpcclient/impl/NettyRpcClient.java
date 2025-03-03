@@ -12,6 +12,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
+import io.prometheus.metrics.core.metrics.Counter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,7 @@ public class NettyRpcClient implements RpcClient {
     private final InetSocketAddress address;
 
     private volatile Channel channel;
+
 
     public NettyRpcClient(InetSocketAddress serviceAddress) {
         this.address = serviceAddress;
