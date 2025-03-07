@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RpcServerInitializer implements CommandLineRunner, BeanPostProcessor {
 
@@ -38,7 +37,6 @@ public class RpcServerInitializer implements CommandLineRunner, BeanPostProcesso
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
         if (rpcService != null) {
-
             Class<?>[] interfaces = bean.getClass().getInterfaces();
             for (Class<?> interfaceClass : interfaces) {
                 log.info("注册接口名: {}", interfaceClass.getName());

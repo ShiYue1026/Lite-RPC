@@ -15,11 +15,13 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Component
 public class GuavaRetry {
 
-    @Resource
     private MeterRegistry meterRegistry;
+
+    public GuavaRetry(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
+    }
 
     public RpcResponse sendRequestWithRetry(RpcRequest request, RpcClient rpcClient) {
         Retryer<RpcResponse> retryer = RetryerBuilder.<RpcResponse>newBuilder()

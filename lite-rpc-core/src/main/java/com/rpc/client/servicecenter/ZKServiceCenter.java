@@ -17,21 +17,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Slf4j
-@Component
-@Primary
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "zookeeper", matchIfMissing = true)
 public class ZKServiceCenter implements ServiceCenter {
 
     private static final String RETRY_PATH = "Retry";  // 存放可以进行重试的方法
 
-    @Autowired
     private CuratorFramework client;
 
-    @Autowired
     private ServiceCache serviceCache;
 
-    @Autowired
-    private LoadBalanceFactory loadBalanceFactory;
+    public ZKServiceCenter(CuratorFramework client, ServiceCache serviceCache) {
+        this.client = client;
+        this.serviceCache = serviceCache;
+    }
 
     @Value("${rpc.loadBalance}")
     private String loadBalanceType;
@@ -47,7 +44,7 @@ public class ZKServiceCenter implements ServiceCenter {
             }
             // 负载均衡
             services = new CopyOnWriteArrayList<>(services);
-            String service = loadBalanceFactory.getLoadBalance(loadBalanceType).balance(request, services);
+            String service = LoadBalanceFactory.getLoadBalance(loadBalanceType).balance(request, services);
             return parseAddress(service);
         } catch (Exception e) {
             e.printStackTrace();

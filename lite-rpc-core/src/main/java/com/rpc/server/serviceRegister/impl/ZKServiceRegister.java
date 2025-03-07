@@ -20,13 +20,13 @@ import java.util.List;
 
 
 @Slf4j
-@Component
-@Primary
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "zookeeper", matchIfMissing = true)
 public class ZKServiceRegister implements ServiceRegister {
 
-    @Autowired
     private CuratorFramework client;
+
+    public ZKServiceRegister(CuratorFramework client) {
+        this.client = client;
+    }
 
     private static final String RETRY_PATH = "Retry";
 

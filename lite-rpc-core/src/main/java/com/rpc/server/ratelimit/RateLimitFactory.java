@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-@Component
 public class RateLimitFactory {
 
-    private final HashMap<String, RateLimit> rateLimitMap = new HashMap<>();
+    private static final HashMap<String, RateLimit> rateLimitMap = new HashMap<>();
 
-    public RateLimit getRateLimit(String interfaceName, String type) {
+    public static RateLimit getRateLimit(String interfaceName, String type) {
         if(rateLimitMap.containsKey(interfaceName)) {
             return rateLimitMap.get(interfaceName);
         }
@@ -21,7 +20,7 @@ public class RateLimitFactory {
         return rateLimit;
     }
 
-    private RateLimit createRateLimit(String type) {
+    private static RateLimit createRateLimit(String type) {
         switch(type){
             case RateLimitType.TOKEN_BUCKET:
                 return new TokenBucketRateLimiter(10, 100);

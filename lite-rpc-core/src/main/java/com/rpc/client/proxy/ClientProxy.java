@@ -27,23 +27,19 @@ import java.util.UUID;
 
 
 @Slf4j
-@Component
 public class ClientProxy implements InvocationHandler {
 
-    @Autowired
     private ServiceCenter serviceCenter;
 
-    @Autowired
-    private NettyRpcClientFactory clientFactory;
-
-    @Autowired
-    private CircuitBreakerFactory circuitBreakerFactory;
-
-    @Autowired
     private GuavaRetry guavaRetry;
 
-    @Resource
     private MeterRegistry meterRegistry;
+
+    public ClientProxy(ServiceCenter serviceCenter, GuavaRetry guavaRetry, MeterRegistry meterRegistry) {
+        this.serviceCenter = serviceCenter;
+        this.guavaRetry = guavaRetry;
+        this.meterRegistry = meterRegistry;
+    }
 
     private Class<?> fallbackClass;
 
@@ -59,7 +55,7 @@ public class ClientProxy implements InvocationHandler {
                 .params(args).paramsType(method.getParameterTypes()).build();
 
         // 熔断机制
-        CircuitBreaker circuitBreaker = circuitBreakerFactory.getCircuitBreaker(getMethodSignature(request.getInterfaceName(), method));
+        CircuitBreaker circuitBreaker = CircuitBreakerFactory.getCircuitBreaker(getMethodSignature(request.getInterfaceName(), method));
 
         if(!circuitBreaker.allowRequest()){
             log.info("熔断器生效，当前请求被熔断");
@@ -79,7 +75,7 @@ public class ClientProxy implements InvocationHandler {
         log.info("方法签名: {}", methodSignature);
         RpcResponse response = null;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
-        RpcClient rpcClient = clientFactory.getClient(serviceAddress);
+        RpcClient rpcClient = NettyRpcClientFactory.getClient(serviceAddress);
         Counter requestCounter = meterRegistry.counter("rpc_requests_total");
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
             response = guavaRetry.sendRequestWithRetry(request, rpcClient);

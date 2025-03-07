@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Component
 public class CircuitBreakerFactory {
 
-    private final ConcurrentHashMap<String, CircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, CircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();
 
-    public synchronized CircuitBreaker getCircuitBreaker(String methodSignature) {
+    public static synchronized CircuitBreaker getCircuitBreaker(String methodSignature) {
         CircuitBreaker circuitBreaker;
         if(circuitBreakers.containsKey(methodSignature)) {
             return circuitBreakers.get(methodSignature);

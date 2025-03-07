@@ -12,7 +12,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Component
 public class LoadBalanceFactory {
 
     private static final ConcurrentHashMap<String, LoadBalance> loadBalanceMap = new ConcurrentHashMap<>();
@@ -23,7 +22,7 @@ public class LoadBalanceFactory {
         });
     }
 
-    public LoadBalance getLoadBalance(String type) {
+    public static LoadBalance getLoadBalance(String type) {
         type = (type + "loadbalancer").toLowerCase();
         log.info("负载均衡类型: {}", type);
         return loadBalanceMap.get(type);

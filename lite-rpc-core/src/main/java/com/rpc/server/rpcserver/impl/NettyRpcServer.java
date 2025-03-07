@@ -15,14 +15,15 @@ import org.springframework.stereotype.Component;
 
 
 @Slf4j
-@Component
 public class NettyRpcServer implements RpcServer {
 
-    @Autowired
     private ServiceProvider serviceProvider;
 
     private ChannelFuture channelFuture;
 
+    public NettyRpcServer(ServiceProvider serviceProvider) {
+        this.serviceProvider = serviceProvider;
+    }
 
     @Override
     public void start(int port) {

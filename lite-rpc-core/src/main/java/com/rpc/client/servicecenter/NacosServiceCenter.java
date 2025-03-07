@@ -17,15 +17,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
-@Component
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "nacos")
 public class NacosServiceCenter implements ServiceCenter {
 
-    @Autowired
     private ServiceCache serviceCache;
 
-    @Autowired
-    private LoadBalanceFactory loadBalanceFactory;
+    public NacosServiceCenter(ServiceCache serviceCache) {
+        this.serviceCache = serviceCache;
+    }
 
     @Value("${rpc.loadBalance}")
     private String loadBalanceType;
@@ -45,7 +43,7 @@ public class NacosServiceCenter implements ServiceCenter {
                 }
             }
             // 负载均衡
-            String service = loadBalanceFactory.getLoadBalance(loadBalanceType).balance(request, services);
+            String service = LoadBalanceFactory.getLoadBalance(loadBalanceType).balance(request, services);
             return parseAddress(service);
         } catch (Exception e) {
             e.printStackTrace();

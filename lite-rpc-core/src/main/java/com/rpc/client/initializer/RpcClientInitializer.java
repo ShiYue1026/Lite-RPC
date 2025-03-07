@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RpcClientInitializer implements BeanPostProcessor, CommandLineRunner {
 

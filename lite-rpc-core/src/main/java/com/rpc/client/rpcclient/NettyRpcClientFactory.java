@@ -7,12 +7,11 @@ import org.springframework.stereotype.Component;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
 public class NettyRpcClientFactory {
 
-    private final ConcurrentHashMap<InetSocketAddress, RpcClient> clientCache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<InetSocketAddress, RpcClient> clientCache = new ConcurrentHashMap<>();
 
-    public RpcClient getClient(InetSocketAddress serviceAddress) {
+    public static RpcClient getClient(InetSocketAddress serviceAddress) {
         return clientCache.computeIfAbsent(serviceAddress, NettyRpcClient::new);
     }
 }

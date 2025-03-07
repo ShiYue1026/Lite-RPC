@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-@Component
 @AllArgsConstructor
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "zookeeper", matchIfMissing = true)
 public class ZKWatcher implements Watcher {
 
     private CuratorFramework client;

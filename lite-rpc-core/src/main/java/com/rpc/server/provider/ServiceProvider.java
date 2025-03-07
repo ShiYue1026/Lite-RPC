@@ -14,22 +14,18 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class ServiceProvider {
 
     private final Map<String, Object> interfaceProvider = new HashMap<>();
 
     private final ServiceRegister serviceRegister;
 
-    private final RateLimitFactory rateLimitFactory;  // 接口限流器
-
     @Getter
     @Value("${rpc.port}")
     private int port;
 
-    public ServiceProvider(ServiceRegister serviceRegister, RateLimitFactory rateLimitFactory) {
+    public ServiceProvider(ServiceRegister serviceRegister) {
         this.serviceRegister = serviceRegister;
-        this.rateLimitFactory = rateLimitFactory;
     }
 
     public void provideServiceInterface(Object service) {
@@ -55,7 +51,7 @@ public class ServiceProvider {
     }
 
     public RateLimit getRateLimit(String interfaceName){
-        return rateLimitFactory.getRateLimit(interfaceName, RateLimitType.TOKEN_BUCKET);
+        return RateLimitFactory.getRateLimit(interfaceName, RateLimitType.TOKEN_BUCKET);
     }
 
 }

@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "rpc.registry", havingValue = "nacos")
 public class NacosWatcher implements Watcher {
 
     private final ServiceCache serviceCache; // 本地缓存
