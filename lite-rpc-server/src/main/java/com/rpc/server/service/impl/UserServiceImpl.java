@@ -1,6 +1,6 @@
 package com.rpc.server.service.impl;
 
-import com.rpc.annotation.RpcService;
+import com.rpc.common.annotation.RpcService;
 import com.rpc.pojo.User;
 import com.rpc.service.UserService;
 import lombok.extern.slf4j.Slf4j;

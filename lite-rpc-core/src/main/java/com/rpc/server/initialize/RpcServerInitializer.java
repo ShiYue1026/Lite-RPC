@@ -1,6 +1,6 @@
 package com.rpc.server.initialize;
 
-import com.rpc.annotation.RpcService;
+import com.rpc.common.annotation.RpcService;
 import com.rpc.server.provider.ServiceProvider;
 import com.rpc.server.rpcserver.RpcServer;
 import lombok.AllArgsConstructor;

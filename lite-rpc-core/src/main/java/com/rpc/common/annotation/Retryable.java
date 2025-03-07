@@ -1,4 +1,4 @@
-package com.rpc.annotation;
+package com.rpc.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

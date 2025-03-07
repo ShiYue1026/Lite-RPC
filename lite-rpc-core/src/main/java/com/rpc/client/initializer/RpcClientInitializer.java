@@ -1,6 +1,6 @@
 package com.rpc.client.initializer;
 
-import com.rpc.annotation.RpcClient;
+import com.rpc.common.annotation.RpcClient;
 import com.rpc.client.proxy.ClientProxy;
 import com.rpc.client.servicecenter.ZKWatcher.Watcher;
 import com.rpc.client.servicecenter.ZKWatcher.ZKWatcher;

@@ -1,7 +1,7 @@
 package com.rpc.client.rpcclient;
 
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

@@ -1,7 +1,7 @@
 package com.rpc.client.servicecenter.balance;
 
 
-import com.rpc.message.RpcRequest;
+import com.rpc.common.message.RpcRequest;
 
 import java.util.List;
 

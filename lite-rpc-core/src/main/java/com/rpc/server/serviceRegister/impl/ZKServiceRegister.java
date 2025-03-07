@@ -1,6 +1,6 @@
 package com.rpc.server.serviceRegister.impl;
 
-import com.rpc.annotation.Retryable;
+import com.rpc.common.annotation.Retryable;
 import com.rpc.server.serviceRegister.ServiceRegister;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;

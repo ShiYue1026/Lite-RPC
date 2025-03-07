@@ -1,4 +1,4 @@
-package com.rpc.util;
+package com.rpc.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.rpc.serializer.mySerializer;
+package com.rpc.common.serializer.mySerializer;
 
 import lombok.extern.slf4j.Slf4j;
 

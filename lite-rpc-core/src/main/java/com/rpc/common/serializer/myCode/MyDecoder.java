@@ -1,14 +1,13 @@
-package com.rpc.serializer.myCode;
+package com.rpc.common.serializer.myCode;
 
-import com.rpc.message.MessageType;
-import com.rpc.serializer.mySerializer.Serializer;
+import com.rpc.common.serializer.mySerializer.Serializer;
+import com.rpc.common.message.MessageType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Objects;
 
 @AllArgsConstructor
 public class MyDecoder extends ByteToMessageDecoder {

@@ -2,7 +2,7 @@ package com.rpc.client.servicecenter;
 
 import com.rpc.client.cache.ServiceCache;
 import com.rpc.client.servicecenter.balance.LoadBalanceFactory;
-import com.rpc.message.RpcRequest;
+import com.rpc.common.message.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.factory.annotation.Autowired;

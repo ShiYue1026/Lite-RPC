@@ -1,17 +1,15 @@
-package com.rpc.serializer.myCode;
+package com.rpc.common.serializer.myCode;
 
-import com.rpc.message.MessageType;
-import com.rpc.message.RpcHeartBeat;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
-import com.rpc.serializer.mySerializer.Serializer;
+import com.rpc.common.serializer.mySerializer.Serializer;
+import com.rpc.common.message.MessageType;
+import com.rpc.common.message.RpcHeartBeat;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Arrays;
 
 @Slf4j
 @AllArgsConstructor

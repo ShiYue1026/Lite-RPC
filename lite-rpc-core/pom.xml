@@ -18,9 +18,35 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>com.rpc</groupId>
-			<artifactId>lite-rpc-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.83</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.15.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.15.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.15.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>
@@ -57,6 +83,12 @@
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
 			<version>5.8.10</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.51.Final</version>
+			<scope>compile</scope>
 		</dependency>
 		<!-- JUnit 5 API 和 Engine -->
 		<dependency>

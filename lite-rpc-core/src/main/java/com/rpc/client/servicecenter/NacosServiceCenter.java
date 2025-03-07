@@ -5,7 +5,7 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.rpc.client.cache.ServiceCache;
 import com.rpc.client.servicecenter.balance.LoadBalanceFactory;
-import com.rpc.message.RpcRequest;
+import com.rpc.common.message.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

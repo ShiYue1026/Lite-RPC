@@ -2,8 +2,8 @@ package com.rpc.client.retry;
 
 import com.github.rholder.retry.*;
 import com.rpc.client.rpcclient.RpcClient;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.Resource;

@@ -2,9 +2,9 @@ package com.rpc.client.rpcclient.impl;
 
 import com.rpc.client.netty.initializer.NettyClientInitializer;
 import com.rpc.client.rpcclient.RpcClient;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
-import com.rpc.util.PendingProcessedMap;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
+import com.rpc.common.util.PendingProcessedMap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

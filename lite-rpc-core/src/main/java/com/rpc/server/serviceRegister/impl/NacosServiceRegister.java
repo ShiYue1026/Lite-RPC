@@ -3,7 +3,7 @@ package com.rpc.server.serviceRegister.impl;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.rpc.annotation.Retryable;
+import com.rpc.common.annotation.Retryable;
 import com.rpc.server.serviceRegister.ServiceRegister;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;

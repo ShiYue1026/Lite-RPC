@@ -1,6 +1,6 @@
 package com.rpc.client.proxy;
 
-import com.rpc.annotation.FallBack;
+import com.rpc.common.annotation.FallBack;
 import com.rpc.client.circuitbreaker.CircuitBreaker;
 import com.rpc.client.circuitbreaker.CircuitBreakerFactory;
 import com.rpc.client.retry.GuavaRetry;
@@ -9,9 +9,9 @@ import com.rpc.client.rpcclient.RpcClient;
 import com.rpc.client.rpcclient.impl.NettyRpcClient;
 import com.rpc.client.servicecenter.ServiceCenter;
 import com.rpc.client.servicecenter.ZKServiceCenter;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
-import com.rpc.util.PendingProcessedMap;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
+import com.rpc.common.util.PendingProcessedMap;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.Resource;

@@ -4,7 +4,7 @@ import com.rpc.client.servicecenter.balance.constant.LoadBalanceType;
 import com.rpc.client.servicecenter.balance.impl.ConsistentHashBalancer;
 import com.rpc.client.servicecenter.balance.impl.RandomLoadBalancer;
 import com.rpc.client.servicecenter.balance.impl.RoundRobinLoadBalancer;
-import com.rpc.serializer.mySerializer.Serializer;
+import com.rpc.common.serializer.mySerializer.Serializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

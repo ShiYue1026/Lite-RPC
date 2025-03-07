@@ -1,8 +1,8 @@
-package com.rpc.serializer.mySerializer;
+package com.rpc.common.serializer.mySerializer;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
-import com.rpc.exception.SerializeException;
+import com.rpc.common.exception.SerializeException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;

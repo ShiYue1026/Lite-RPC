@@ -1,8 +1,8 @@
 package com.rpc.server.netty.handler;
 
-import com.rpc.message.RpcHeartBeat;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
+import com.rpc.common.message.RpcHeartBeat;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
 import com.rpc.server.provider.ServiceProvider;
 import com.rpc.server.ratelimit.RateLimit;
 import com.rpc.server.tool.SpringContextHolder;

@@ -1,8 +1,8 @@
 package com.rpc.server.netty.initializer;
 
-import com.rpc.serializer.myCode.MyDecoder;
-import com.rpc.serializer.myCode.MyEncoder;
-import com.rpc.serializer.mySerializer.JsonSerializer;
+import com.rpc.common.serializer.myCode.MyDecoder;
+import com.rpc.common.serializer.myCode.MyEncoder;
+import com.rpc.common.serializer.mySerializer.JsonSerializer;
 import com.rpc.server.netty.handler.NettyServerHandler;
 import com.rpc.server.provider.ServiceProvider;
 import io.netty.channel.ChannelInitializer;

@@ -1,6 +1,6 @@
 package com.rpc.client.servicecenter;
 
-import com.rpc.message.RpcRequest;
+import com.rpc.common.message.RpcRequest;
 import java.net.InetSocketAddress;
 
 public interface ServiceCenter {

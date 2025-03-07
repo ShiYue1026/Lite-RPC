@@ -1,18 +1,18 @@
-package com.rpc.serializer.mySerializer;
+package com.rpc.common.serializer.mySerializer;
 
-import com.rpc.exception.SerializeException;
-import com.rpc.message.RpcHeartBeat;
-import com.rpc.message.RpcRequest;
-import com.rpc.message.RpcResponse;
+import com.rpc.common.exception.SerializeException;
+import com.rpc.common.message.RpcHeartBeat;
+import com.rpc.common.message.RpcRequest;
+import com.rpc.common.message.RpcResponse;
 import io.protostuff.LinkedBuffer;
-import io.protostuff.Schema;
 import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
 
 import javax.sql.rowset.serial.SerialException;
 import java.util.Objects;
 
-import static com.rpc.message.MessageType.*;
+import static com.rpc.common.message.MessageType.*;
 
 public class ProtostuffSerializer implements Serializer {
 

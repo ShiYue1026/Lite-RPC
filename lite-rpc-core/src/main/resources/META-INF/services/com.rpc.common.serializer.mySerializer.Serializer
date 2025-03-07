@@ -1,0 +1,4 @@
+com.rpc.common.serializer.mySerializer.JsonSerializer
+com.rpc.common.serializer.mySerializer.HessianSerializer
+com.rpc.common.serializer.mySerializer.KryoSerializer
+com.rpc.common.serializer.mySerializer.ProtostuffSerializer

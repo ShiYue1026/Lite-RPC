@@ -1,6 +1,6 @@
-package com.rpc.util;
+package com.rpc.common.util;
 
-import com.rpc.message.RpcResponse;
+import com.rpc.common.message.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;

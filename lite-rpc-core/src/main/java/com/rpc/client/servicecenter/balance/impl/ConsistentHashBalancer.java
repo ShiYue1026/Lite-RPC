@@ -1,7 +1,7 @@
 package com.rpc.client.servicecenter.balance.impl;
 
 import com.rpc.client.servicecenter.balance.LoadBalance;
-import com.rpc.message.RpcRequest;
+import com.rpc.common.message.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
