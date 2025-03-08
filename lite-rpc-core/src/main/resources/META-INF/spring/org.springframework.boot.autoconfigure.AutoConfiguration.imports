@@ -1,0 +1,2 @@
+com.rpc.server.config.RpcServerAutoConfiguration
+com.rpc.client.config.RpcClientAutoConfiguration

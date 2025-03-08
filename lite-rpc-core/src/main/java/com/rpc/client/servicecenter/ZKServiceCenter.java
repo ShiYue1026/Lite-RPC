@@ -30,7 +30,7 @@ public class ZKServiceCenter implements ServiceCenter {
         this.serviceCache = serviceCache;
     }
 
-    @Value("${rpc.loadBalance}")
+    @Value("${rpc.loadBalance:random}")
     private String loadBalanceType;
 
     // 服务发现
