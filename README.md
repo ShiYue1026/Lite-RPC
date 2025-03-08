@@ -25,7 +25,7 @@
 
 - 支持客户端自定义熔断fallback处理
 
-- 通过自定义spring-boot-starter组件的方式集成SpringBoot，支持通过注解的方式进行服务注册与服务消费
+- 通过自定义`spring-boot-starter`组件的方式集成SpringBoot，支持通过注解的方式进行服务注册与服务消费
 
 - 支持Prometheus + Grafana进行监控
 
