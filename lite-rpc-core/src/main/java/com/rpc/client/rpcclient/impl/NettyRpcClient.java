@@ -59,7 +59,7 @@ public class NettyRpcClient implements RpcClient {
     }
 
     @Override
-    public RpcResponse sendRequest(RpcRequest request) throws ExecutionException, InterruptedException {
+    public CompletableFuture<RpcResponse> sendRequest(RpcRequest request) throws ExecutionException, InterruptedException {
         // 从注册中心获取服务地址
         connect();
 
@@ -68,9 +68,7 @@ public class NettyRpcClient implements RpcClient {
 
         channel.writeAndFlush(request);
 
-
-
-        return future.get();
+        return future;  // 异步发送请求，不等待结果
     }
 
 

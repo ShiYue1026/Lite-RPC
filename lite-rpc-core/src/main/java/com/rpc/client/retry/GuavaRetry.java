@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -23,12 +25,19 @@ public class GuavaRetry {
         this.meterRegistry = meterRegistry;
     }
 
-    public RpcResponse sendRequestWithRetry(RpcRequest request, RpcClient rpcClient) {
-        Retryer<RpcResponse> retryer = RetryerBuilder.<RpcResponse>newBuilder()
+    public CompletableFuture<RpcResponse> sendRequestWithRetry(RpcRequest request, RpcClient rpcClient) {
+        Retryer<CompletableFuture<RpcResponse>> retryer = RetryerBuilder.<CompletableFuture<RpcResponse>>newBuilder()
                 // 只要出现异常进行重试
                 .retryIfException()
                 // Response的响应码为500进行重试
-                .retryIfResult(response -> Objects.equals(response.getCode(), 500))
+                .retryIfResult(response -> {
+                    try {
+                        return Objects.equals(response.get().getCode(), 500);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                })
                 // 重试等待策略：等待2s后再进行重试
                 .withWaitStrategy(WaitStrategies.fixedWait(2, TimeUnit.SECONDS))
                 // 重试停止策略：重试达到3次
@@ -36,13 +45,13 @@ public class GuavaRetry {
                 .withRetryListener(new RetryListener() {
                     @Override
                     public <V> void onRetry(Attempt<V> attempt) {
-                        Counter requestCounter = meterRegistry.counter("rpc_requests_total");
-                        requestCounter.increment();
+//                        Counter requestCounter = meterRegistry.counter("rpc_requests_total");
+//                        requestCounter.increment();
                         log.info("RetryListener: 第{}次调用", attempt.getAttemptNumber());
-                        if((int) attempt.getAttemptNumber() != 1){
-                            Counter retryCounter = meterRegistry.counter("rpc_retries_total");
-                            retryCounter.increment();
-                        }
+//                        if((int) attempt.getAttemptNumber() != 1){
+//                            Counter retryCounter = meterRegistry.counter("rpc_retries_total");
+//                            retryCounter.increment();
+//                        }
                     }
                 }).build();
 
@@ -51,6 +60,6 @@ public class GuavaRetry {
         } catch (Exception e){
             e.printStackTrace();
         }
-        return RpcResponse.fail(request.getRequestId());
+        return CompletableFuture.completedFuture(RpcResponse.fail(request.getRequestId()));
     }
 }

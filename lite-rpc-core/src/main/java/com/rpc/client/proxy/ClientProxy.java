@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 
 @Slf4j
@@ -74,15 +75,17 @@ public class ClientProxy implements InvocationHandler {
         String methodSignature = getMethodSignature(request.getInterfaceName(), method);
         log.info("方法签名: {}", methodSignature);
         RpcResponse response = null;
+        CompletableFuture<RpcResponse> future;
         InetSocketAddress serviceAddress = serviceCenter.serviceDiscovery(request);
         RpcClient rpcClient = NettyRpcClientFactory.getClient(serviceAddress);
         Counter requestCounter = meterRegistry.counter("rpc_requests_total");
         if(serviceCenter.checkRetry(serviceAddress, methodSignature)){
-            response = guavaRetry.sendRequestWithRetry(request, rpcClient);
+            future = guavaRetry.sendRequestWithRetry(request, rpcClient);
         } else {
             requestCounter.increment();
-            response= rpcClient.sendRequest(request);
+            future = rpcClient.sendRequest(request);
         }
+        response = future.get();
 
         // 统计请求是否成功，上报给熔断器
         if (response.getCode() == 200){
