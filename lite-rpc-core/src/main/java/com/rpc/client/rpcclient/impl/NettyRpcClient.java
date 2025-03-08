@@ -68,6 +68,8 @@ public class NettyRpcClient implements RpcClient {
 
         channel.writeAndFlush(request);
 
+
+
         return future.get();
     }
 
