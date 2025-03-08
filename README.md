@@ -17,8 +17,6 @@
 
 - 支持客户端与服务端之间的心跳超时与重连机制，自动管理客户端和服务端之间的连接状态
 
-- 支持客户端与服务端通过Spring注解的方式进行服务注册与服务消费
-
 - 支持服务端上的多种限流算法：滑动窗口法、漏桶算法、令牌桶算法
 
 - 支持客户端上的多种负载均衡策略：随机、轮询、一致性哈希
@@ -27,14 +25,15 @@
 
 - 支持客户端自定义熔断fallback处理
 
+- 通过自定义spring-boot-starter组件的方式集成SpringBoot，支持通过注解的方式进行服务注册与服务消费
+
 - 支持Prometheus + Grafana进行监控
 
 
   
 # 使用方式
-### 1. 下载模块
 
-### 2. 引入依赖
+### 1. 引入依赖
 
 ```xml
 <dependencies>
@@ -54,9 +53,9 @@
 
 ```
 
-## 3. 服务端定义接口和实现类
+## 2. 服务端定义接口和实现类
 
-### 3.1 定义接口
+### 2.1 定义接口
 
 - 使用`@Retryable`注解标记需要进行重试的幂等方法
 
@@ -72,7 +71,7 @@ public interface UserService {   // 客户端通过这个接口调用服务端�
 }
 ```
 
-### 3.2 接口实现类
+### 2.2 接口实现类
 
 - 使用`@RpcService`注解标记接口实现类
 
@@ -101,7 +100,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-### 3.3 客户端可自定义FallBack类
+### 2.3 客户端可自定义FallBack类
 
 - 在`@RpcClient`注解的参数中引入自定义的FallBack类
 
@@ -131,7 +130,7 @@ public class UserServiceFallBack implements UserService {
   ...
 ```
 
-### 3.4 自定义配置
+### 2.4 自定义配置
 
 - 服务端自定义端口号和注册中心类型
 
@@ -151,7 +150,7 @@ rpc:
 ```
 
 
-### 3.5 客户端远程调用
+### 2.5 客户端远程调用
 
 - 使用`@RpcClient`注解标记需要远程调用的服务接口类
 - 直接使用接口类调用服务类方法即可
@@ -176,7 +175,7 @@ class ClientTest {
     }
 ```
 
-### 3.6 可以结合Prometheus + Grafana对远程调用状态进行监控
+### 2.6 可以结合Prometheus + Grafana对远程调用状态进行监控
 <img width="1061" alt="image" src="https://github.com/user-attachments/assets/06e107c9-a740-4aa6-90cb-6ea3ff09dab3" />
 
 
