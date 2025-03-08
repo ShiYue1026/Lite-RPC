@@ -1,6 +1,6 @@
 package com.rpc.client;
 
-import com.rpc.annotation.RpcClient;
+import com.rpc.common.annotation.RpcClient;
 import com.rpc.client.fallback.UserServiceFallBack;
 import com.rpc.pojo.User;
 import com.rpc.service.UserService;

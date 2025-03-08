@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.rpc.client.config.RpcClientAutoConfiguration,\
+  com.rpc.server.config.RpcServerAutoConfiguration
